@@ -30,6 +30,11 @@
 )
 ;(read_from_file)
 ;
+(defun tournament ()
+    (print "starting tournament")
+    nil
+)
+;(tournament)
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;ask user for input

@@ -1,7 +1,12 @@
 (defun game (x)
-  (cond ((= x 0) "start new tournament")
+    (cond 
+        ((= x 0) "start new tournament")
         ((= x 1) "resume old tournament")
         (t "wrong input. Validate")
-  )
+    )
 )
+(defun generate_values ()  
+    
+)
+;
 (game (read))

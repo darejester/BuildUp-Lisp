@@ -1,4 +1,5 @@
 (defun game (x)
+    
     (cond 
         ((= x 0) 
             (print "start new tournament")
@@ -17,6 +18,7 @@
     (print "generate boneyard for players")
     (print "generate hand of players")
     (print "generate score and rounds")
+    nil
 )
 ;(generate_values)
 ;
@@ -25,7 +27,10 @@
     (print "extract boneyard for players")
     (print "extract hand of players")
     (print "extract score and rounds")
+    nil
 )
 ;(read_from_file)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(print "0 : Start New Tournament")
+(print "1 : Resume Old Tournament")
 (game (read))

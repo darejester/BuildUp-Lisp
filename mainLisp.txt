@@ -1,5 +1,4 @@
 (defun game (x)
-    
     (cond 
         ((= x 0) 
             (print "start new tournament")
@@ -30,7 +29,9 @@
     nil
 )
 ;(read_from_file)
+;
+;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(print "0 : Start New Tournament")
-(print "1 : Resume Old Tournament")
+;ask user for input
+(format nil "0 : Start New Tournament ~% 1 : Resume Old Tournament")
 (game (read))

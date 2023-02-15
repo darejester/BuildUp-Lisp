@@ -1,8 +1,7 @@
 (defun game (x)
-  (cond ((> x 0) "positive")
-        ((< x 0) "negative")
-        (t "zero")
+  (cond ((= x 0) "start new tournament")
+        ((= x 1) "resume old tournament")
+        (t "wrong input. Validate")
   )
 )
-
 (game (read))

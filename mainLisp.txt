@@ -2,7 +2,7 @@
     (cond 
         ((= x 0) 
             (print "start new tournament")
-            (generate_dominos)
+            (generate_values)
         )
         ((= x 1) 
             (print "resume old tournament")
@@ -12,19 +12,40 @@
     )
 )
 ;
-(defun generate_dominos ()  
+(defun generate_values ()  
     ;put all in let function
     (let(
             
-            (x (shuffle(generate_boneyard)))
+            (m_values
+                (list
+                    (list
+                        (eval '(shuffle(generate_boneyard)))
+                        ()
+                        ()
+                        0
+                        0
+                    )
+                    (list
+                        (eval '(shuffle(generate_boneyard)))
+                        ()
+                        ()
+                        0
+                        0
+                    )
+                
+                )
+            )
         )
+        (print "generate stack for players")
         (print "generate boneyard for players")
-        x
+        (print "generate hand of players")
+        (print "generate score and rounds")
+        m_values
     )
     
     
 )
-;(generate_dominos)
+;(generate_values)
 ;
 (defun generate_boneyard ()  
     ;generate dominos
@@ -42,7 +63,8 @@
 ;
 (defun shuffle (a_list)  
     ;generate dominos
-    (sort a_list #'(lambda (a b) (random 2)))
+    (sort a_list (lambda (a b) (< (random 2) 1)))
+
 )
 ;(shuffle)
 ;

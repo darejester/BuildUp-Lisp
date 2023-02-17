@@ -42,7 +42,7 @@
         (print(nth 0 (first m_values)))
         (print "generate hand of players")
         (print "generate score and rounds")
-        m_values
+        ;m_values
     )
     
     
@@ -70,12 +70,12 @@
 )
 ;(shuffle)
 ;
-(defun read_from_file ()  
-    (print "extract stack for players")
-    (print "extract boneyard for players")
-    (print "extract hand of players")
-    (print "extract score and rounds")
-    nil
+(defun read_from_file ()
+    (let(
+            (m_values (read))
+        )
+        m_values
+    )
 )
 ;(read_from_file)
 ;

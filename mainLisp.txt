@@ -38,6 +38,8 @@
         )
         (print "generate stack for players")
         (print "generate boneyard for players")
+        ;this is how to print the first element of the first value of m_values
+        (print(nth 0 (first m_values)))
         (print "generate hand of players")
         (print "generate score and rounds")
         m_values

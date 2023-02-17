@@ -1,17 +1,3 @@
-(defun game (x)
-    (cond 
-        ((= x 0) 
-            (print "start new tournament")
-            (generate_values)
-        )
-        ((= x 1) 
-            (print "resume old tournament")
-            (read_from_file)
-        )
-        (t "wrong input. Validate")
-    )
-)
-;
 (defun generate_values ()  
     ;put all in let function
     (let(
@@ -19,15 +5,15 @@
             (m_values
                 (list
                     (list
-                        (eval '(shuffle(generate_boneyard)))
                         ()
+                        (eval '(shuffle(generate_boneyard)))
                         ()
                         0
                         0
                     )
                     (list
-                        (eval '(shuffle(generate_boneyard)))
                         ()
+                        (eval '(shuffle(generate_boneyard)))
                         ()
                         0
                         0
@@ -36,13 +22,13 @@
                 )
             )
         )
-        (print "generate stack for players")
-        (print "generate boneyard for players")
+        ;(print "generate stack for players")
+        ;(print "generate boneyard for players")
         ;this is how to print the first element of the first value of m_values
-        (print(nth 0 (first m_values)))
-        (print "generate hand of players")
-        (print "generate score and rounds")
-        ;m_values
+        ;(print(nth 0 (first m_values)))
+        ;(print "generate hand of players")
+        ;(print "generate score and rounds")
+        m_values
     )
     
     
@@ -79,11 +65,31 @@
 )
 ;(read_from_file)
 ;
-(defun tournament ()
+(defun tournament (a_values)
     (print "starting tournament")
-    nil
+    (print a_values)
+    (cond
+        ((null (nth 1 (nth 0 a_values))) (print "empty"))
+        ((not(null a_values)) (print "not empty"))
+        (t (print "ERROR"))
+    )
 )
 ;(tournament)
+;
+(defun game (x)
+    (cond 
+        ((= x 0) 
+            (print "start new tournament")
+            
+            (tournament (generate_values))
+        )
+        ((= x 1) 
+            (print "resume old tournament")
+            (read_from_file)
+        )
+        (t "wrong input. Validate")
+    )
+)
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;ask user for input

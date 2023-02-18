@@ -67,12 +67,21 @@
 ;
 (defun tournament (a_values)
     (print "starting tournament")
+    (print(format nil "0 : continue ~% 1 : exit"))
     (print a_values)
-    (cond
-        ((null (nth 1 (nth 0 a_values))) (print "empty"))
-        ((not(null a_values)) (print "not empty"))
-        (t (print "ERROR"))
+    (let(
+            (ans (read))
+        )
+        ;a_values
+        (cond
+            ;((null (nth 1 (nth 0 a_values))) (print "empty"))
+            ;((not(null a_values)) (print "not empty"))
+            ((= ans 0) (print "continue"))
+            ((= ans 1) (print "exit"))
+            (t (print "ERROR"))
+        )
     )
+    
 )
 ;(tournament)
 ;

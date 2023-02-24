@@ -14,30 +14,30 @@
 (defun sum (a_domino)  
    (+ (nth 0 a_domino) (nth 1 a_domino))
 )
-(sum '(2 3))
+;(sum '(2 3))
 ;
 (defun shuffle (a_values)  
-    (print (sum (nth 0 (nth 1 (nth 0 a_values)))))
-    (print (sum (nth 0 (nth 1 (nth 1 a_values)))))
+    ;(print (sum (nth 0 (nth 1 (nth 0 a_values)))))
+    ;(print (sum (nth 0 (nth 1 (nth 1 a_values)))))
     (cond
         (
             (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
-                (print "shuffle")
                 (progn
                     (print "shuffle")            
-                    (let(
+                    (let
+                        (
                             (m_values
                                 (list
                                     (list
                                         (nth 0 (nth 0 a_values))
-                                        (stable-sort (nth 1 (nth 0 a_values)) (lambda (a b) (< (random 2) 1)))
+                                        (sort (copy-list (nth 1 (nth 0 a_values))) #'(lambda (a b) (< (random 2) 1)))
                                         (nth 2 (nth 0 a_values))
                                         (nth 3 (nth 0 a_values))
                                         (nth 4 (nth 0 a_values))
                                     )
                                     (list
                                         (nth 0 (nth 1 a_values))
-                                        (stable-sort (nth 1 (nth 1 a_values)) (lambda (a b) (< (random 2) 1)))
+                                        (sort (copy-list (nth 1 (nth 1 a_values))) #'(lambda (a b) (< (random 2) 1)))
                                         (nth 2 (nth 1 a_values))
                                         (nth 3 (nth 1 a_values))
                                         (nth 4 (nth 1 a_values))
@@ -46,6 +46,7 @@
                             )
                         )
                         m_values
+                        ;(print m_values)
                     )   
                 )
         )
@@ -57,8 +58,8 @@
 ;
 (defun generate_values ()  
     ;put all in let function
+    (print "generate values")
     (let(
-            
             (m_values
                 (list
                     (list
@@ -75,20 +76,82 @@
                         0
                         0
                     )
-                
                 )
             )
         )
         m_values
+        ;(print m_values)
     )
 )
 (generate_values)
+;
+(defun draw (a_values)
+    ;put all in let function
+    (print "draw")
+    (print a_values)
+    (cond 
+        (
+            (> (length (nth 1(nth 0 a_values))) 6)
+                (let
+                    (
+                        (m_values
+                            (list
+                                (list
+                                    ()
+                                    (subseq (nth 1 (nth 0 a_values))6)
+                                    (subseq (nth 1 (nth 0 a_values))0 6)
+                                    0
+                                    0
+                                )
+                                (list
+                                    ()
+                                    (subseq (nth 1 (nth 1 a_values))6)
+                                    (subseq (nth 1 (nth 1 a_values))0 6)
+                                    0
+                                    0
+                                )
+                            )
+                        )
+                    )
+                    m_values
+                )
+        )
+        (
+            (< (length (nth 1(nth 0 a_values))) 6) 
+                (let
+                    (
+                        (m_values
+                            (list
+                                (list
+                                    ()
+                                    (nth 1 (nth 0 a_values))
+                                    (subseq (nth 1 (nth 0 a_values))0 4)
+                                    0
+                                    0
+                                )
+                                (list
+                                    ()
+                                    (nth 1 (nth 1 a_values))
+                                    (subseq (nth 1 (nth 1 a_values))0 4)
+                                    0
+                                    0
+                                )
+                            )
+                        )
+                    )
+                    m_values
+                )
+        )
+        (t "ERROR")
+    )
+)
+;(draw)
 ;
 (defun game (x)
     (cond 
         ((= x 0) 
             (print "start new tournament")
-            (shuffle(generate_values))
+            (draw(shuffle(generate_values)))
         )
         ((= x 1) 
             (print "resume old tournament")
@@ -97,6 +160,7 @@
         (t "wrong input. Validate")
     )
 )
+;(game)
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;ask user for input

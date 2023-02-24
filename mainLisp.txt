@@ -45,12 +45,19 @@
                                 )
                             )
                         )
-                        m_values
+                        (shuffle m_values)
                         ;(print m_values)
                     )   
                 )
         )
-        ((not (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values))))))(print "no need to shuffle"))
+        (
+            (not (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values))))))
+                (progn
+                    (print "no need to shuffle")
+                    a_values
+                )
+            
+        )
         (t (print "ERROR"))
     )
 )
@@ -147,6 +154,16 @@
 )
 ;(draw)
 ;
+(defun read_from_file ()
+    (print "serialization file")
+    (let(
+            (m_values (read))
+        )
+        m_values
+    )
+)
+;(read_from_file)
+;
 (defun game (x)
     (cond 
         ((= x 0) 
@@ -155,7 +172,7 @@
         )
         ((= x 1) 
             (print "resume old tournament")
-            ;(read_from_file)
+            (read_from_file)
         )
         (t "wrong input. Validate")
     )

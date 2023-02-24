@@ -18,11 +18,13 @@
 ;
 (defun shuffle (a_values)  
     (print (sum (nth 0 (nth 1 (nth 0 a_values)))))
+    (print (sum (nth 0 (nth 1 (nth 1 a_values)))))
     (cond
         (
             (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
-                (
-                    print "shuffle"            
+                (print "shuffle")
+                (progn
+                    (print "shuffle")            
                     (let(
                             (m_values
                                 (list
@@ -61,14 +63,14 @@
                 (list
                     (list
                         ()
-                        (eval '(generate_boneyard))
+                        (generate_boneyard)
                         ()
                         0
                         0
                     )
                     (list
                         ()
-                        (eval '(generate_boneyard))
+                        (generate_boneyard)
                         ()
                         0
                         0

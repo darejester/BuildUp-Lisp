@@ -1,42 +1,4 @@
-(defun generate_values ()  
-    ;put all in let function
-    (let(
-            
-            (m_values
-                (list
-                    (list
-                        ()
-                        (eval '(shuffle(generate_boneyard)))
-                        ()
-                        0
-                        0
-                    )
-                    (list
-                        ()
-                        (eval '(shuffle(generate_boneyard)))
-                        ()
-                        0
-                        0
-                    )
-                
-                )
-            )
-        )
-        ;(print "generate stack for players")
-        ;(print "generate boneyard for players")
-        ;this is how to print the first element of the first value of m_values
-        ;(print(nth 0 (first m_values)))
-        ;(print "generate hand of players")
-        ;(print "generate score and rounds")
-        m_values
-    )
-    
-    
-)
-;(generate_values)
-;
 (defun generate_boneyard ()  
-    ;generate dominos
     '(
     (0 0) (0 1) (0 2) (0 3) (0 4) (0 5) (0 6)
           (1 1) (1 2) (1 3) (1 4) (1 5) (1 6)
@@ -47,54 +9,88 @@
                                         (6 6)
     )
 )
-;(generate_boneyard)
+(generate_boneyard)
 ;
-(defun shuffle (a_list)  
-    ;generate dominos
-    (sort a_list (lambda (a b) (< (random 2) 1)))
-
+(defun sum (a_domino)  
+   (+ (nth 0 a_domino) (nth 1 a_domino))
+)
+(sum '(2 3))
+;
+(defun shuffle (a_values)  
+    (print (sum (nth 0 (nth 1 (nth 0 a_values)))))
+    (cond
+        (
+            (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
+                (
+                    print "shuffle"            
+                    (let(
+                            (m_values
+                                (list
+                                    (list
+                                        (nth 0 (nth 0 a_values))
+                                        (stable-sort (nth 1 (nth 0 a_values)) (lambda (a b) (< (random 2) 1)))
+                                        (nth 2 (nth 0 a_values))
+                                        (nth 3 (nth 0 a_values))
+                                        (nth 4 (nth 0 a_values))
+                                    )
+                                    (list
+                                        (nth 0 (nth 1 a_values))
+                                        (stable-sort (nth 1 (nth 1 a_values)) (lambda (a b) (< (random 2) 1)))
+                                        (nth 2 (nth 1 a_values))
+                                        (nth 3 (nth 1 a_values))
+                                        (nth 4 (nth 1 a_values))
+                                    )
+                                )
+                            )
+                        )
+                        m_values
+                    )   
+                )
+        )
+        ((not (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values))))))(print "no need to shuffle"))
+        (t (print "ERROR"))
+    )
 )
 ;(shuffle)
 ;
-(defun read_from_file ()
+(defun generate_values ()  
+    ;put all in let function
     (let(
-            (m_values (read))
+            
+            (m_values
+                (list
+                    (list
+                        ()
+                        (eval '(generate_boneyard))
+                        ()
+                        0
+                        0
+                    )
+                    (list
+                        ()
+                        (eval '(generate_boneyard))
+                        ()
+                        0
+                        0
+                    )
+                
+                )
+            )
         )
         m_values
     )
 )
-;(read_from_file)
-;
-(defun tournament (a_values)
-    (print "starting tournament")
-    (print(format nil "0 : continue ~% 1 : exit"))
-    (print a_values)
-    (let(
-            (ans (read))
-        )
-        ;a_values
-        (cond
-            ;((null (nth 1 (nth 0 a_values))) (print "empty"))
-            ;((not(null a_values)) (print "not empty"))
-            ((= ans 0) (print "continue"))
-            ((= ans 1) (print "exit"))
-            (t (print "ERROR"))
-        )
-    )
-    
-)
-;(tournament)
+(generate_values)
 ;
 (defun game (x)
     (cond 
         ((= x 0) 
             (print "start new tournament")
-            
-            (tournament (generate_values))
+            (shuffle(generate_values))
         )
         ((= x 1) 
             (print "resume old tournament")
-            (read_from_file)
+            ;(read_from_file)
         )
         (t "wrong input. Validate")
     )

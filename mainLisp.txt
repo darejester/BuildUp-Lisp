@@ -42,6 +42,8 @@
                                         (nth 3 (nth 1 a_values))
                                         (nth 4 (nth 1 a_values))
                                     )
+                                    (nth 2 a_values)
+                                    
                                 )
                             )
                         )
@@ -92,10 +94,100 @@
 )
 (generate_values)
 ;
+(defun check_first (a_values)  
+    ;put all in let function
+    (print "check first")
+    (print a_values)
+    (cond
+        (
+            (null(nth 2 a_values))
+                (progn
+                    (print "decide who goes first")
+                    (cond
+                        (
+                            (> (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
+                                (progn
+                                    (let
+                                        (
+                                            (m_values
+                                                (list
+                                                    (list
+                                                        (nth 0 (nth 0 a_values))
+                                                        (nth 1 (nth 0 a_values))
+                                                        (nth 2 (nth 0 a_values))
+                                                        (nth 3 (nth 0 a_values))
+                                                        (nth 4 (nth 0 a_values))
+                                                    )
+                                                    (list
+                                                        (nth 0 (nth 1 a_values))
+                                                        (nth 1 (nth 1 a_values))
+                                                        (nth 2 (nth 1 a_values))
+                                                        (nth 3 (nth 1 a_values))
+                                                        (nth 4 (nth 1 a_values))
+                                                    )
+                                                    "Computer"
+                                                )
+                                            )
+                                        )
+                                        ;(print m_values)
+                                        m_values
+                                    )   
+                                
+                                )
+                        )
+                        (
+                            (< (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
+                                (progn
+                                    (let
+                                        (
+                                            (m_values
+                                                (list
+                                                    (list
+                                                        (nth 0 (nth 0 a_values))
+                                                        (nth 1 (nth 0 a_values))
+                                                        (nth 2 (nth 0 a_values))
+                                                        (nth 3 (nth 0 a_values))
+                                                        (nth 4 (nth 0 a_values))
+                                                    )
+                                                    (list
+                                                        (nth 0 (nth 1 a_values))
+                                                        (nth 1 (nth 1 a_values))
+                                                        (nth 2 (nth 1 a_values))
+                                                        (nth 3 (nth 1 a_values))
+                                                        (nth 4 (nth 1 a_values))
+                                                    )
+                                                    "Human"
+                                                )
+                                            )
+                                        )
+                                        ;(print m_values)
+                                        m_values
+                                    )   
+                                
+                                )
+                        )
+                        (t "ERROR")
+                    )
+                    
+                )
+            
+        )
+        (
+            (not (null(nth 2 a_values)))
+                (
+                    (print "no need to decide")
+                    a_values
+                )
+        )
+        (t "ERROR")
+    )
+)
+;(check_first)
+;
 (defun draw (a_values)
     ;put all in let function
     (print "draw")
-    (print a_values)
+    ;(print a_values)
     (cond 
         (
             (> (length (nth 1(nth 0 a_values))) 6)
@@ -117,7 +209,9 @@
                                     0
                                     0
                                 )
+                                (nth 2 a_values)
                             )
+                            
                         )
                     )
                     m_values
@@ -143,6 +237,7 @@
                                     0
                                     0
                                 )
+                                (nth 2 a_values)
                             )
                         )
                     )
@@ -168,7 +263,14 @@
     (cond 
         ((= x 0) 
             (print "start new tournament")
-            (draw(shuffle(generate_values)))
+            (draw
+                (check_first
+                    (shuffle
+                        (generate_values
+                        )
+                    )
+                )
+            )
         )
         ((= x 1) 
             (print "resume old tournament")

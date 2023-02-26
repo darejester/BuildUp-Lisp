@@ -184,6 +184,36 @@
 )
 ;(check_first)
 ;
+(defun set_stacks (a_values)
+    (print "set_stacks")
+    (let
+        (
+            (m_values
+                (list
+                    (list
+                        (subseq (nth 1 (nth 0 a_values))0 6)
+                        (subseq (nth 1 (nth 0 a_values))6)
+                        ()
+                        0
+                        0
+                    )
+                    (list
+                        (subseq (nth 1 (nth 1 a_values))0 6)
+                        (subseq (nth 1 (nth 1 a_values))6)
+                        ()
+                        0
+                        0
+                    )
+                    (nth 2 a_values)
+                )
+                
+            )
+        )
+        m_values
+    )
+)
+;(set_stacks)
+;
 (defun draw (a_values)
     ;put all in let function
     (print "draw")
@@ -196,14 +226,14 @@
                         (m_values
                             (list
                                 (list
-                                    ()
+                                    (nth 0 (nth 0 a_values))
                                     (subseq (nth 1 (nth 0 a_values))6)
                                     (subseq (nth 1 (nth 0 a_values))0 6)
                                     0
                                     0
                                 )
                                 (list
-                                    ()
+                                    (nth 0 (nth 1 a_values))
                                     (subseq (nth 1 (nth 1 a_values))6)
                                     (subseq (nth 1 (nth 1 a_values))0 6)
                                     0
@@ -224,14 +254,14 @@
                         (m_values
                             (list
                                 (list
-                                    ()
+                                    (nth 0 (nth 0 a_values))
                                     (nth 1 (nth 0 a_values))
                                     (subseq (nth 1 (nth 0 a_values))0 4)
                                     0
                                     0
                                 )
                                 (list
-                                    ()
+                                    (nth 0 (nth 1 a_values))
                                     (nth 1 (nth 1 a_values))
                                     (subseq (nth 1 (nth 1 a_values))0 4)
                                     0
@@ -249,6 +279,11 @@
 )
 ;(draw)
 ;
+(defun turn (a_values)
+    (print "turn")
+)
+;(turn)
+;
 (defun read_from_file ()
     (print "serialization file")
     (let(
@@ -263,14 +298,20 @@
     (cond 
         ((= x 0) 
             (print "start new tournament")
-            (draw
-                (check_first
-                    (shuffle
-                        (generate_values
+            (turn
+                (draw
+                    (check_first
+                        (set_stacks
+                           (shuffle
+                                (generate_values
+                                )
+                            ) 
                         )
+                        
                     )
                 )
             )
+            
         )
         ((= x 1) 
             (print "resume old tournament")

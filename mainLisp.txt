@@ -11,17 +11,17 @@
 )
 (generate_boneyard)
 ;
-(defun sum (a_domino)  
+(defun total (a_domino)  
    (+ (nth 0 a_domino) (nth 1 a_domino))
 )
-;(sum '(2 3))
+;(total '(2 3))
 ;
 (defun shuffle (a_values)  
-    ;(print (sum (nth 0 (nth 1 (nth 0 a_values)))))
-    ;(print (sum (nth 0 (nth 1 (nth 1 a_values)))))
+    ;(print (total (nth 0 (nth 1 (nth 0 a_values)))))
+    ;(print (total (nth 0 (nth 1 (nth 1 a_values)))))
     (cond
         (
-            (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
+            (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
                 (progn
                     (print "shuffle")            
                     (let
@@ -53,7 +53,7 @@
                 )
         )
         (
-            (not (= (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values))))))
+            (not (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values))))))
                 (progn
                     (print "no need to shuffle")
                     a_values
@@ -97,7 +97,7 @@
 (defun check_first (a_values)  
     ;put all in let function
     (print "check first")
-    (print a_values)
+    ;(print a_values)
     (cond
         (
             (null(nth 2 a_values))
@@ -105,7 +105,7 @@
                     (print "decide who goes first")
                     (cond
                         (
-                            (> (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
+                            (> (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
                                 (progn
                                     (let
                                         (
@@ -136,7 +136,7 @@
                                 )
                         )
                         (
-                            (< (sum (nth 0 (nth 1 (nth 0 a_values)))) (sum (nth 0 (nth 1 (nth 1 a_values)))))
+                            (< (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
                                 (progn
                                     (let
                                         (
@@ -193,16 +193,16 @@
                     (list
                         (subseq (nth 1 (nth 0 a_values))0 6)
                         (subseq (nth 1 (nth 0 a_values))6)
-                        ()
-                        0
-                        0
+                        (nth 2 (nth 0 a_values))
+                        (nth 3 (nth 0 a_values))
+                        (nth 4 (nth 0 a_values))
                     )
                     (list
                         (subseq (nth 1 (nth 1 a_values))0 6)
                         (subseq (nth 1 (nth 1 a_values))6)
-                        ()
-                        0
-                        0
+                        (nth 2 (nth 1 a_values))
+                        (nth 3 (nth 1 a_values))
+                        (nth 4 (nth 1 a_values))
                     )
                     (nth 2 a_values)
                 )
@@ -229,21 +229,22 @@
                                     (nth 0 (nth 0 a_values))
                                     (subseq (nth 1 (nth 0 a_values))6)
                                     (subseq (nth 1 (nth 0 a_values))0 6)
-                                    0
-                                    0
+                                    (nth 3 (nth 0 a_values))
+                                    (nth 4 (nth 0 a_values))
                                 )
                                 (list
                                     (nth 0 (nth 1 a_values))
                                     (subseq (nth 1 (nth 1 a_values))6)
                                     (subseq (nth 1 (nth 1 a_values))0 6)
-                                    0
-                                    0
+                                    (nth 3 (nth 1 a_values))
+                                    (nth 4 (nth 1 a_values))
                                 )
                                 (nth 2 a_values)
                             )
                             
                         )
                     )
+                    (print m_values)
                     m_values
                 )
         )
@@ -257,20 +258,21 @@
                                     (nth 0 (nth 0 a_values))
                                     (nth 1 (nth 0 a_values))
                                     (subseq (nth 1 (nth 0 a_values))0 4)
-                                    0
-                                    0
+                                    (nth 3 (nth 0 a_values))
+                                    (nth 4 (nth 0 a_values))
                                 )
                                 (list
                                     (nth 0 (nth 1 a_values))
                                     (nth 1 (nth 1 a_values))
                                     (subseq (nth 1 (nth 1 a_values))0 4)
-                                    0
-                                    0
+                                    (nth 3 (nth 1 a_values))
+                                    (nth 4 (nth 1 a_values))
                                 )
                                 (nth 2 a_values)
                             )
                         )
                     )
+                    (print m_values)
                     m_values
                 )
         )
@@ -279,8 +281,49 @@
 )
 ;(draw)
 ;
+(defun get_player_boneyard(a_values)
+    (nth 1 (nth 1 a_values))
+)
+;(get_player_boneyard)
+;
+(defun get_player_hand(a_values)
+    (nth 2 (nth 1 a_values))
+)
+;(get_player_hand)
+;
+(defun get_bot_boneyard(a_values)
+    (nth 1 (nth 0 a_values))
+)
+;(get_bot_boneyard)
+;
+(defun get_bot_hand(a_values)
+    (nth 2 (nth 0 a_values))
+)
+;(get_bot_hand)
+;
+(defun get_first_player(a_values)
+    (nth 2 a_values)
+)
+;(get_first_player)
+;
 (defun turn (a_values)
     (print "turn")
+    ;(print (get_player_hand a_values))
+    (cond
+        ((string= (get_first_player a_values) "Human")
+            (progn
+                (print "HUMAN")
+                
+            )
+        )
+        ((string= (get_first_player a_values) "Computer")
+            (progn
+                (print "COMPUTER")
+                
+            )
+            
+        )
+    )
 )
 ;(turn)
 ;
@@ -303,8 +346,7 @@
                     (check_first
                         (set_stacks
                            (shuffle
-                                (generate_values
-                                )
+                                (generate_values)
                             ) 
                         )
                         

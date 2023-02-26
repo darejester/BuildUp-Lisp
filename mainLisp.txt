@@ -306,20 +306,85 @@
 )
 ;(get_first_player)
 ;
+(defun player_play(a_values)
+    (print "play")
+    (let
+        (
+            (m_values
+                (list
+                    (list
+                        (nth 0 (nth 0 a_values))
+                        (nth 1 (nth 0 a_values))
+                        (cdr(nth 2 (nth 0 a_values)))
+                        (nth 3 (nth 0 a_values))
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        (nth 0 (nth 1 a_values))
+                        (nth 1 (nth 1 a_values))
+                        (nth 2 (nth 1 a_values))
+                        (nth 3 (nth 1 a_values))
+                        (nth 4 (nth 1 a_values))
+                    )
+                    "Computer"
+                )
+            )
+        )
+        (print m_values)
+        m_values
+    )
+)
+;(player_play)
+;
+(defun bot_play(a_values)
+    (print "play")
+    (let
+        (
+            (m_values
+                (list
+                    (list
+                        (nth 0 (nth 0 a_values))
+                        (nth 1 (nth 0 a_values))
+                        (nth 2 (nth 0 a_values))
+                        (nth 3 (nth 0 a_values))
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        (nth 0 (nth 1 a_values))
+                        (nth 1 (nth 1 a_values))
+                        (cdr(nth 2 (nth 1 a_values)))
+                        (nth 3 (nth 1 a_values))
+                        (nth 4 (nth 1 a_values))
+                    )
+                    "Human"
+                )
+            )
+        )
+        (print m_values)
+        m_values
+    )
+)
+;(bot_play)
+;
 (defun turn (a_values)
     (print "turn")
     ;(print (get_player_hand a_values))
     (cond
+        ((and (= (length get_player_hand) 0))
+        )
+    )
+    (cond
         ((string= (get_first_player a_values) "Human")
             (progn
                 (print "HUMAN")
+                (turn (player_play a_values))
                 
             )
         )
         ((string= (get_first_player a_values) "Computer")
             (progn
                 (print "COMPUTER")
-                
+                (turn (bot_play a_values))
             )
             
         )

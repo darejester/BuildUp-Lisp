@@ -306,11 +306,24 @@
 )
 ;(get_first_player)
 ;
+(defun get_stack(a_values)
+    (append (nth 0(nth 0 a_values)) (nth 0 (nth 1 a_values)))
+)
+;(get_stack)
+;
 (defun player_play(a_values)
     (print "play")
     (print a_values)
-    (let
+    (print "Enter the index of the domino in hand that you want to play")
+    (print "Enter the index of the stack that you want to place on")
+    (let*
         (
+            (m_hand_index
+                (read)
+            )
+            (m_stack_index
+                (read)
+            )
             (m_values
                 (list
                     (list
@@ -331,6 +344,473 @@
                 )
             )
         )
+        (print (nth m_hand_index (get_player_hand a_values)))
+        (print (nth m_stack_index (get_stack a_values)))
+        
+        m_values
+    )
+)
+;(player_play)
+;
+(defun bot_play(a_values)
+    (print "play")
+    (print a_values)
+    (let
+        (
+            (m_values
+                (list
+                    (list
+                        (nth 0 (nth 0 a_values))
+                        (nth 1 (nth 0 a_values))
+                        (nth 2 (nth 0 a_values))
+                        (nth 3 (nth 0 a_values))
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        (nth 0 (nth 1 a_values))
+                        (nth 1 (nth 1 a_values))
+                        (cdr(nth 2 (nth 1 a_values)))
+                        (nth 3 (nth 1 a_values))
+                        (nth 4 (nth 1 a_values))
+                    )
+                    "Human"
+                )
+            )
+        )
+        
+        m_values
+    )
+)
+;(bot_play)
+;
+(defun turn (a_values)
+    (print "turn")
+    ;(print (get_player_hand a_values))
+    (cond
+        ((not(and (= (length (get_player_hand a_values)) 0) (= (length (get_bot_hand a_values)) 0)))
+            (progn
+                (cond
+                    ((string= (get_first_player a_values) "Human")
+                        (progn
+                            (print "HUMAN")
+                            (turn (player_play a_values))
+                            
+                        )
+                    )
+                    ((string= (get_first_player a_values) "Computer")
+                        (progn
+                            (print "COMPUTER")
+                            (turn (bot_play a_values))
+                        )
+                        
+                    )
+                )
+            )
+        )
+        ((and (= (length (get_player_hand a_values)) 0) (= (length (get_bot_hand a_values)) 0))
+            (progn
+                a_values
+            )
+        )
+        (t "ERROR")
+    )
+    
+)
+;(turn)
+;
+(defun read_from_file ()
+    (print "serialization file")
+    (let(
+            (m_values (read))
+        )
+        m_values
+    )
+)
+;(read_from_file)
+;
+(defun game (x)
+    (cond 
+        ((= x 0) 
+            (print "start new tournament")
+            (turn
+                (draw
+                    (check_first
+                        (set_stacks
+                           (shuffle
+                                (generate_values)
+                            ) 
+                        )
+                        
+                    )
+                )
+            )
+            
+        )
+        ((= x 1) 
+            (print "resume old tournament")
+            (read_from_file)
+        )
+        (t "wrong input. Validate")
+    )
+)
+;(game)
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;ask user for input
+(format nil "0 : Start New Tournament ~% 1 : Resume Old Tournament")
+(game (read))
+(defun generate_boneyard ()  
+    '(
+    (0 0) (0 1) (0 2) (0 3) (0 4) (0 5) (0 6)
+          (1 1) (1 2) (1 3) (1 4) (1 5) (1 6)
+                (2 2) (2 3) (2 4) (2 5) (2 6)
+                      (3 3) (3 4) (3 5) (3 6)
+                            (4 4) (4 5) (4 6)
+                                  (5 5) (5 6)
+                                        (6 6)
+    )
+)
+(generate_boneyard)
+;
+(defun total (a_domino)  
+   (+ (nth 0 a_domino) (nth 1 a_domino))
+)
+;(total '(2 3))
+;
+(defun shuffle (a_values)  
+    ;(print (total (nth 0 (nth 1 (nth 0 a_values)))))
+    ;(print (total (nth 0 (nth 1 (nth 1 a_values)))))
+    (cond
+        (
+            (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                (progn
+                    (print "shuffle")            
+                    (let
+                        (
+                            (m_values
+                                (list
+                                    (list
+                                        (nth 0 (nth 0 a_values))
+                                        (sort (copy-list (nth 1 (nth 0 a_values))) #'(lambda (a b) (< (random 2) 1)))
+                                        (nth 2 (nth 0 a_values))
+                                        (nth 3 (nth 0 a_values))
+                                        (nth 4 (nth 0 a_values))
+                                    )
+                                    (list
+                                        (nth 0 (nth 1 a_values))
+                                        (sort (copy-list (nth 1 (nth 1 a_values))) #'(lambda (a b) (< (random 2) 1)))
+                                        (nth 2 (nth 1 a_values))
+                                        (nth 3 (nth 1 a_values))
+                                        (nth 4 (nth 1 a_values))
+                                    )
+                                    (nth 2 a_values)
+                                    
+                                )
+                            )
+                        )
+                        (shuffle m_values)
+                        ;(print m_values)
+                    )   
+                )
+        )
+        (
+            (not (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values))))))
+                (progn
+                    (print "no need to shuffle")
+                    a_values
+                )
+            
+        )
+        (t (print "ERROR"))
+    )
+)
+;(shuffle)
+;
+(defun generate_values ()  
+    ;put all in let function
+    (print "generate values")
+    (let(
+            (m_values
+                (list
+                    (list
+                        ()
+                        (generate_boneyard)
+                        ()
+                        0
+                        0
+                    )
+                    (list
+                        ()
+                        (generate_boneyard)
+                        ()
+                        0
+                        0
+                    )
+                )
+            )
+        )
+        m_values
+        ;(print m_values)
+    )
+)
+(generate_values)
+;
+(defun check_first (a_values)  
+    ;put all in let function
+    (print "check first")
+    ;(print a_values)
+    (cond
+        (
+            (null(nth 2 a_values))
+                (progn
+                    ;(print "decide who goes first")
+                    (cond
+                        (
+                            (> (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                (progn
+                                    (let
+                                        (
+                                            (m_values
+                                                (list
+                                                    (list
+                                                        (nth 0 (nth 0 a_values))
+                                                        (nth 1 (nth 0 a_values))
+                                                        (nth 2 (nth 0 a_values))
+                                                        (nth 3 (nth 0 a_values))
+                                                        (nth 4 (nth 0 a_values))
+                                                    )
+                                                    (list
+                                                        (nth 0 (nth 1 a_values))
+                                                        (nth 1 (nth 1 a_values))
+                                                        (nth 2 (nth 1 a_values))
+                                                        (nth 3 (nth 1 a_values))
+                                                        (nth 4 (nth 1 a_values))
+                                                    )
+                                                    "Computer"
+                                                )
+                                            )
+                                        )
+                                        ;(print m_values)
+                                        m_values
+                                    )   
+                                
+                                )
+                        )
+                        (
+                            (< (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                (progn
+                                    (let
+                                        (
+                                            (m_values
+                                                (list
+                                                    (list
+                                                        (nth 0 (nth 0 a_values))
+                                                        (nth 1 (nth 0 a_values))
+                                                        (nth 2 (nth 0 a_values))
+                                                        (nth 3 (nth 0 a_values))
+                                                        (nth 4 (nth 0 a_values))
+                                                    )
+                                                    (list
+                                                        (nth 0 (nth 1 a_values))
+                                                        (nth 1 (nth 1 a_values))
+                                                        (nth 2 (nth 1 a_values))
+                                                        (nth 3 (nth 1 a_values))
+                                                        (nth 4 (nth 1 a_values))
+                                                    )
+                                                    "Human"
+                                                )
+                                            )
+                                        )
+                                        ;(print m_values)
+                                        m_values
+                                    )   
+                                
+                                )
+                        )
+                        (t "ERROR")
+                    )
+                    
+                )
+            
+        )
+        (
+            (not (null(nth 2 a_values)))
+                (
+                    (print "no need to decide")
+                    a_values
+                )
+        )
+        (t "ERROR")
+    )
+)
+;(check_first)
+;
+(defun set_stacks (a_values)
+    (print "set_stacks")
+    (let
+        (
+            (m_values
+                (list
+                    (list
+                        (subseq (nth 1 (nth 0 a_values))0 6)
+                        (subseq (nth 1 (nth 0 a_values))6)
+                        (nth 2 (nth 0 a_values))
+                        (nth 3 (nth 0 a_values))
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        (subseq (nth 1 (nth 1 a_values))0 6)
+                        (subseq (nth 1 (nth 1 a_values))6)
+                        (nth 2 (nth 1 a_values))
+                        (nth 3 (nth 1 a_values))
+                        (nth 4 (nth 1 a_values))
+                    )
+                    (nth 2 a_values)
+                )
+                
+            )
+        )
+        m_values
+    )
+)
+;(set_stacks)
+;
+(defun draw (a_values)
+    ;put all in let function
+    (print "draw")
+    ;(print a_values)
+    (cond 
+        (
+            (> (length (nth 1(nth 0 a_values))) 6)
+                (let
+                    (
+                        (m_values
+                            (list
+                                (list
+                                    (nth 0 (nth 0 a_values))
+                                    (subseq (nth 1 (nth 0 a_values))6)
+                                    (subseq (nth 1 (nth 0 a_values))0 6)
+                                    (nth 3 (nth 0 a_values))
+                                    (nth 4 (nth 0 a_values))
+                                )
+                                (list
+                                    (nth 0 (nth 1 a_values))
+                                    (subseq (nth 1 (nth 1 a_values))6)
+                                    (subseq (nth 1 (nth 1 a_values))0 6)
+                                    (nth 3 (nth 1 a_values))
+                                    (nth 4 (nth 1 a_values))
+                                )
+                                (nth 2 a_values)
+                            )
+                            
+                        )
+                    )
+                    (print m_values)
+                    m_values
+                )
+        )
+        (
+            (< (length (nth 1(nth 0 a_values))) 6) 
+                (let
+                    (
+                        (m_values
+                            (list
+                                (list
+                                    (nth 0 (nth 0 a_values))
+                                    (nth 1 (nth 0 a_values))
+                                    (subseq (nth 1 (nth 0 a_values))0 4)
+                                    (nth 3 (nth 0 a_values))
+                                    (nth 4 (nth 0 a_values))
+                                )
+                                (list
+                                    (nth 0 (nth 1 a_values))
+                                    (nth 1 (nth 1 a_values))
+                                    (subseq (nth 1 (nth 1 a_values))0 4)
+                                    (nth 3 (nth 1 a_values))
+                                    (nth 4 (nth 1 a_values))
+                                )
+                                (nth 2 a_values)
+                            )
+                        )
+                    )
+                    (print m_values)
+                    m_values
+                )
+        )
+        (t "ERROR")
+    )
+)
+;(draw)
+;
+(defun get_player_boneyard(a_values)
+    (nth 1 (nth 1 a_values))
+)
+;(get_player_boneyard)
+;
+(defun get_player_hand(a_values)
+    (nth 2 (nth 1 a_values))
+)
+;(get_player_hand)
+;
+(defun get_bot_boneyard(a_values)
+    (nth 1 (nth 0 a_values))
+)
+;(get_bot_boneyard)
+;
+(defun get_bot_hand(a_values)
+    (nth 2 (nth 0 a_values))
+)
+;(get_bot_hand)
+;
+(defun get_first_player(a_values)
+    (nth 2 a_values)
+)
+;(get_first_player)
+;
+(defun get_stack(a_values)
+    (append (nth 0(nth 0 a_values)) (nth 0 (nth 1 a_values)))
+    (print (nth 0(nth 1 a_values)))
+    (print (nth 0(nth 0 a_values)))
+    
+    (print (append (nth 0(nth 0 a_values)) (nth 0 (nth 1 a_values))))
+)
+;(get_stack)
+;
+(defun player_play(a_values)
+    (print "play")
+    (print a_values)
+    (print "Enter the index of the domino in hand that you want to play")
+    (print "Enter the index of the stack that you want to place on")
+    (let*
+        (
+            (m_hand_index
+                (read)
+            )
+            (m_stack_index
+                (read)
+            )
+            (m_values
+                (list
+                    (list
+                        (nth 0 (nth 0 a_values))
+                        (nth 1 (nth 0 a_values))
+                        (cdr(nth 2 (nth 0 a_values)))
+                        (nth 3 (nth 0 a_values))
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        (nth 0 (nth 1 a_values))
+                        (nth 1 (nth 1 a_values))
+                        (nth 2 (nth 1 a_values))
+                        (nth 3 (nth 1 a_values))
+                        (nth 4 (nth 1 a_values))
+                    )
+                    "Computer"
+                )
+            )
+        )
+        (print (nth m_hand_index (get_player_hand a_values)))
+        (print (nth m_stack_index (get_stack a_values)))
         
         m_values
     )

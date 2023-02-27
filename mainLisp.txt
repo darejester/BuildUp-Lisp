@@ -333,6 +333,16 @@
 )
 ;(get_player_score)
 ;
+(defun get_bot_tournament_score(a_values)
+    (nth 4 (nth 0 a_values))
+)
+;(get_player_score)
+;
+(defun get_player_tournament_score(a_values)
+    (nth 4 (nth 1 a_values))
+)
+;(get_player_score)
+;
 (defun update_stack(a_stack a_hand a_stack_index a_hand_index)
     ;(append (subseq a_stack 0 a_stack_index)(list (nth a_hand_index a_hand))(subseq a_stack a_stack_index))
     (append
@@ -522,6 +532,66 @@
 )
 ;(update_round_score)
 ;
+(defun update_tournament_score (a_values)
+    (print "update_tournament_score")
+    (print (get_bot_score a_values))
+    (print (get_player_score a_values))
+    (let*
+        (
+            (m_bot_tournament_score
+                (cond
+                    ((> (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_bot_tournament_score a_values) 1)
+                    )
+                    ((= (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_bot_tournament_score a_values) 1)
+                    )
+                    ((< (get_bot_score a_values) (get_player_score a_values))
+                        (get_bot_tournament_score a_values)
+                    )
+                    (t "ERROR")
+                )
+            )
+            (m_player_tournament_score
+                (cond
+                    ((> (get_bot_score a_values) (get_player_score a_values))
+                        (get_player_tournament_score a_values)
+                    )
+                    ((= (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_player_tournament_score a_values) 1)
+                    )
+                    ((< (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_player_tournament_score a_values) 1)
+                    )
+                    (t "ERROR")
+                )
+            )
+            (m_values
+                (list
+                    (list
+                        NIL
+                        NIL
+                        NIL
+                        0
+                        m_bot_tournament_score
+                    )
+                    (list
+                        NIL
+                        NIL
+                        NIL
+                        0
+                        m_player_tournament_score
+                    )
+                    
+                )
+            )
+        )
+        
+        m_values
+    )
+)
+;(update_tournament_score)
+;
 (defun turn (a_values)
     (print "turn")
     ;(print (get_player_hand a_values))
@@ -543,6 +613,7 @@
                         )
                         
                     )
+                    (t "ERROR")
                 )
             )
         )
@@ -554,8 +625,10 @@
                         (turn(draw (update_round_score a_values)))
                     )
                     ((null (get_player_boneyard a_values))
-                        a_values
+                        (print a_values)
+                        (update_tournament_score (update_round_score a_values))
                     )
+                    (t "ERROR")
                 
                 )
                 

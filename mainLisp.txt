@@ -311,6 +311,16 @@
 )
 ;(get_stack)
 ;
+(defun update_hand(a_hand a_index)
+    (append (subseq a_hand 0 a_index)(subseq a_hand (1+ a_index)))
+)
+;(update_hand)
+;
+(defun update_stack(a_stack a_hand a_stack_index a_hand_index)
+    (append (subseq a_stack 0 a_stack_index)(list (nth a_hand_index a_hand))(subseq a_stack a_stack_index))
+)
+;(update_stack)
+;
 (defun player_play(a_values)
     (print "play")
     (print a_values)
@@ -324,19 +334,24 @@
             (m_stack_index
                 (read)
             )
+            (m_updated_stack
+                (update_stack (get_stack a_values) (get_player_hand a_values) m_stack_index m_hand_index)
+                
+            )
             (m_values
                 (list
                     (list
                         (nth 0 (nth 0 a_values))
                         (nth 1 (nth 0 a_values))
-                        (cdr(nth 2 (nth 0 a_values)))
+                        (nth 2 (nth 0 a_values))
                         (nth 3 (nth 0 a_values))
                         (nth 4 (nth 0 a_values))
                     )
                     (list
                         (nth 0 (nth 1 a_values))
                         (nth 1 (nth 1 a_values))
-                        (nth 2 (nth 1 a_values))
+                        ;(cdr(nth 2 (nth 1 a_values)))
+                        (update_hand (get_player_hand a_values) m_hand_index)
                         (nth 3 (nth 1 a_values))
                         (nth 4 (nth 1 a_values))
                     )
@@ -346,6 +361,7 @@
         )
         (print (nth m_hand_index (get_player_hand a_values)))
         (print (nth m_stack_index (get_stack a_values)))
+        (print m_updated_stack)
         
         m_values
     )
@@ -362,14 +378,14 @@
                     (list
                         (nth 0 (nth 0 a_values))
                         (nth 1 (nth 0 a_values))
-                        (nth 2 (nth 0 a_values))
+                        (cdr(nth 2 (nth 0 a_values)))
                         (nth 3 (nth 0 a_values))
                         (nth 4 (nth 0 a_values))
                     )
                     (list
                         (nth 0 (nth 1 a_values))
                         (nth 1 (nth 1 a_values))
-                        (cdr(nth 2 (nth 1 a_values)))
+                        (nth 2 (nth 1 a_values))
                         (nth 3 (nth 1 a_values))
                         (nth 4 (nth 1 a_values))
                     )

@@ -258,14 +258,14 @@
                             (list
                                 (list
                                     (nth 0 (nth 0 a_values))
-                                    (nth 1 (nth 0 a_values))
+                                    (subseq (nth 1 (nth 0 a_values))6)
                                     (subseq (nth 1 (nth 0 a_values))0 4)
                                     (nth 3 (nth 0 a_values))
                                     (nth 4 (nth 0 a_values))
                                 )
                                 (list
                                     (nth 0 (nth 1 a_values))
-                                    (nth 1 (nth 1 a_values))
+                                    (subseq (nth 1 (nth 1 a_values))6)
                                     (subseq (nth 1 (nth 1 a_values))0 4)
                                     (nth 3 (nth 1 a_values))
                                     (nth 4 (nth 1 a_values))
@@ -436,7 +436,17 @@
         )
         ((and (= (length (get_player_hand a_values)) 0) (= (length (get_bot_hand a_values)) 0))
             (progn
-                a_values
+                ;a_values
+                (cond
+                    ((not(null (get_player_boneyard a_values)))
+                        (turn(draw a_values))
+                    )
+                    ((null (get_player_boneyard a_values))
+                        a_values
+                    )
+                
+                )
+                
             )
         )
         (t "ERROR")

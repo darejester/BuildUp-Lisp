@@ -308,6 +308,7 @@
 ;
 (defun player_play(a_values)
     (print "play")
+    (print a_values)
     (let
         (
             (m_values
@@ -330,7 +331,7 @@
                 )
             )
         )
-        (print m_values)
+        
         m_values
     )
 )
@@ -338,6 +339,7 @@
 ;
 (defun bot_play(a_values)
     (print "play")
+    (print a_values)
     (let
         (
             (m_values
@@ -360,7 +362,7 @@
                 )
             )
         )
-        (print m_values)
+        
         m_values
     )
 )

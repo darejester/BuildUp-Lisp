@@ -12,7 +12,7 @@
 (generate_boneyard)
 ;
 (defun total (a_domino)  
-   (+ (nth 0 a_domino) (nth 1 a_domino))
+   (+ (nth 1 a_domino) (nth 2 a_domino))
 )
 ;(total '(2 3))
 ;
@@ -73,14 +73,16 @@
                 (list
                     (list
                         ()
-                        (generate_boneyard)
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "W" sublist)) (generate_boneyard))
                         ()
                         0
                         0
                     )
                     (list
                         ()
-                        (generate_boneyard)
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "B" sublist)) (generate_boneyard))
                         ()
                         0
                         0

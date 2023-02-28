@@ -143,7 +143,7 @@
                                                         (nth 3 (nth 1 a_values))
                                                         (nth 4 (nth 1 a_values))
                                                     )
-                                                    "Computer"
+                                                    "COMPUTER"
                                                 )
                                             )
                                         )
@@ -174,7 +174,7 @@
                                                         (nth 3 (nth 1 a_values))
                                                         (nth 4 (nth 1 a_values))
                                                     )
-                                                    "Human"
+                                                    "HUMAN"
                                                 )
                                             )
                                         )
@@ -204,31 +204,40 @@
 ;
 (defun set_stacks (a_values)
     (print "set_stacks")
-    (let
-        (
-            (m_values
-                (list
-                    (list
-                        (subseq (nth 1 (nth 0 a_values))0 6)
-                        (subseq (nth 1 (nth 0 a_values))6)
-                        (nth 2 (nth 0 a_values))
-                        (nth 3 (nth 0 a_values))
-                        (nth 4 (nth 0 a_values))
+    (cond
+        ((and (null (nth 0 (nth 0 a_values))) (null (nth 0 (nth 1 a_values))))
+            (let
+                (
+                    (m_values
+                        (list
+                            (list
+                                (subseq (nth 1 (nth 0 a_values))0 6)
+                                (subseq (nth 1 (nth 0 a_values))6)
+                                (nth 2 (nth 0 a_values))
+                                (nth 3 (nth 0 a_values))
+                                (nth 4 (nth 0 a_values))
+                            )
+                            (list
+                                (subseq (nth 1 (nth 1 a_values))0 6)
+                                (subseq (nth 1 (nth 1 a_values))6)
+                                (nth 2 (nth 1 a_values))
+                                (nth 3 (nth 1 a_values))
+                                (nth 4 (nth 1 a_values))
+                            )
+                            (nth 2 a_values)
+                        )
+                        
                     )
-                    (list
-                        (subseq (nth 1 (nth 1 a_values))0 6)
-                        (subseq (nth 1 (nth 1 a_values))6)
-                        (nth 2 (nth 1 a_values))
-                        (nth 3 (nth 1 a_values))
-                        (nth 4 (nth 1 a_values))
-                    )
-                    (nth 2 a_values)
                 )
-                
+                m_values
             )
         )
-        m_values
+        ((not (and (null (nth 0 (nth 0 a_values))) (null (nth 0 (nth 1 a_values)))))
+            (print "no need to set stacks")
+            a_values
+        )
     )
+    
 )
 ;(set_stacks)
 ;
@@ -236,66 +245,75 @@
     ;put all in let function
     (print "draw")
     ;(print a_values)
-    (cond 
-        (
-            (> (length (nth 1(nth 0 a_values))) 6)
-                (let
-                    (
-                        (m_values
-                            (list
-                                (list
-                                    (nth 0 (nth 0 a_values))
-                                    (subseq (nth 1 (nth 0 a_values))6)
-                                    (subseq (nth 1 (nth 0 a_values))0 6)
-                                    (nth 3 (nth 0 a_values))
-                                    (nth 4 (nth 0 a_values))
+    (cond
+        ((and (null (get_bot_hand a_values)) (null (get_player_hand a_values)))
+            (cond 
+                (
+                    (> (length (nth 1(nth 0 a_values))) 6)
+                        (let
+                            (
+                                (m_values
+                                    (list
+                                        (list
+                                            (nth 0 (nth 0 a_values))
+                                            (subseq (nth 1 (nth 0 a_values))6)
+                                            (subseq (nth 1 (nth 0 a_values))0 6)
+                                            (nth 3 (nth 0 a_values))
+                                            (nth 4 (nth 0 a_values))
+                                        )
+                                        (list
+                                            (nth 0 (nth 1 a_values))
+                                            (subseq (nth 1 (nth 1 a_values))6)
+                                            (subseq (nth 1 (nth 1 a_values))0 6)
+                                            (nth 3 (nth 1 a_values))
+                                            (nth 4 (nth 1 a_values))
+                                        )
+                                        (nth 2 a_values)
+                                    )
+                                    
                                 )
-                                (list
-                                    (nth 0 (nth 1 a_values))
-                                    (subseq (nth 1 (nth 1 a_values))6)
-                                    (subseq (nth 1 (nth 1 a_values))0 6)
-                                    (nth 3 (nth 1 a_values))
-                                    (nth 4 (nth 1 a_values))
-                                )
-                                (nth 2 a_values)
                             )
-                            
+                            (print m_values)
+                            m_values
                         )
-                    )
-                    (print m_values)
-                    m_values
                 )
-        )
-        (
-            (< (length (nth 1(nth 0 a_values))) 6) 
-                (let
-                    (
-                        (m_values
-                            (list
-                                (list
-                                    (nth 0 (nth 0 a_values))
-                                    (subseq (nth 1 (nth 0 a_values))6)
-                                    (subseq (nth 1 (nth 0 a_values))0 4)
-                                    (nth 3 (nth 0 a_values))
-                                    (nth 4 (nth 0 a_values))
+                (
+                    (< (length (nth 1(nth 0 a_values))) 6) 
+                        (let
+                            (
+                                (m_values
+                                    (list
+                                        (list
+                                            (nth 0 (nth 0 a_values))
+                                            (subseq (nth 1 (nth 0 a_values))6)
+                                            (subseq (nth 1 (nth 0 a_values))0 4)
+                                            (nth 3 (nth 0 a_values))
+                                            (nth 4 (nth 0 a_values))
+                                        )
+                                        (list
+                                            (nth 0 (nth 1 a_values))
+                                            (subseq (nth 1 (nth 1 a_values))6)
+                                            (subseq (nth 1 (nth 1 a_values))0 4)
+                                            (nth 3 (nth 1 a_values))
+                                            (nth 4 (nth 1 a_values))
+                                        )
+                                        (nth 2 a_values)
+                                    )
                                 )
-                                (list
-                                    (nth 0 (nth 1 a_values))
-                                    (subseq (nth 1 (nth 1 a_values))6)
-                                    (subseq (nth 1 (nth 1 a_values))0 4)
-                                    (nth 3 (nth 1 a_values))
-                                    (nth 4 (nth 1 a_values))
-                                )
-                                (nth 2 a_values)
                             )
+                            (print m_values)
+                            m_values
                         )
-                    )
-                    (print m_values)
-                    m_values
                 )
+                (t "ERROR")
+            )
         )
-        (t "ERROR")
+        ((not(and (null (get_bot_hand a_values)) (null (get_player_hand a_values))))
+            (print "no need to draw")
+            a_values
+        )
     )
+    
 )
 ;(draw)
 ;
@@ -430,7 +448,7 @@
                         (nth 3 (nth 1 a_values))
                         (nth 4 (nth 1 a_values))
                     )
-                    "Computer"
+                    "COMPUTER"
                 )
             )
         )
@@ -464,7 +482,7 @@
                         (nth 3 (nth 1 a_values))
                         (nth 4 (nth 1 a_values))
                     )
-                    "Human"
+                    "HUMAN"
                 )
             )
         )
@@ -533,7 +551,7 @@
                         (+ (get_player_score a_values)(score (get_stack a_values) "B"))
                         (nth 4 (nth 1 a_values))
                     )
-                    "Human"
+                    "HUMAN"
                 )
             )
         )
@@ -606,18 +624,21 @@
 (defun turn (a_values)
     (print "turn")
     ;(print (get_player_hand a_values))
+    (display_board a_values)
     (cond
         ((not(and (= (length (get_player_hand a_values)) 0) (= (length (get_bot_hand a_values)) 0)))
             (progn
+                (print "1")
+                (print (get_first_player a_values))
                 (cond
-                    ((string= (get_first_player a_values) "Human")
+                    ((string= (get_first_player a_values) "HUMAN")
                         (progn
                             (print "HUMAN")
                             (turn (player_play a_values))
                             
                         )
                     )
-                    ((string= (get_first_player a_values) "Computer")
+                    ((string= (get_first_player a_values) "COMPUTER")
                         (progn
                             (print "COMPUTER")
                             (turn (bot_play a_values))
@@ -681,9 +702,18 @@
         )
         ((= x 1) 
             (print "resume old tournament")
-            (shuffle
-                (read_from_file)
+            (turn
+                (draw
+                    (set_stacks
+                        (shuffle
+                            (read_from_file)
+                        )
+                    )
+                )
             )
+            
+            
+            
         )
         (t "wrong input. Validate")
     )

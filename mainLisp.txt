@@ -703,6 +703,25 @@
 )
 ;(update_tournament_score)
 ;
+(defun declare_round_winner (a_values)
+    (cond
+        ((> (get_bot_score a_values) (get_player_score a_values))
+            (print "WINNER: BOT")
+            a_values
+        )
+        ((< (get_bot_score a_values) (get_player_score a_values))
+            (print "WINNER: PLAYER")
+            a_values
+        )
+        ((= (get_bot_score a_values) (get_player_score a_values))
+            (print "WINNER: DRAW")
+            a_values
+        )
+        (t "ERROR")
+    )
+)
+;(declare_round_winner)
+;
 (defun turn (a_values)
     (print "turn")
     ;(print (get_player_hand a_values))
@@ -739,7 +758,7 @@
                     )
                     ((null (get_player_boneyard a_values))
                         (print a_values)
-                        (update_tournament_score (update_round_score a_values))
+                        (update_tournament_score (declare_round_winner (update_round_score a_values)))
                     )
                     (t "ERROR")
                 
@@ -762,6 +781,25 @@
     )
 )
 ;(read_from_file)
+;
+(defun declare_tournament_winner (a_values)
+    (cond
+        ((> (get_bot_tournament_score a_values) (get_player_tournament_score a_values))
+            (print "WINNER: BOT")
+            a_values
+        )
+        ((< (get_bot_tournament_score a_values) (get_player_tournament_score a_values))
+            (print "WINNER: PLAYER")
+            a_values
+        )
+        ((= (get_bot_tournament_score a_values) (get_player_tournament_score a_values))
+            (print "WINNER: DRAW")
+            a_values
+        )
+        (t "ERROR")
+    )
+)
+;(declare_tournament_winner)
 ;
 (defun tournament (a_values)
     (print "tournament")
@@ -790,7 +828,7 @@
             )
             ((= ans 0)
                 (display_board a_values)
-                ;display winner too
+                (declare_tournament_winner a_values)
             )
         )
     )

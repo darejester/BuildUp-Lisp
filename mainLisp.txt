@@ -273,7 +273,7 @@
                                     
                                 )
                             )
-                            (print m_values)
+                            ;(print m_values)
                             m_values
                         )
                 )
@@ -301,7 +301,7 @@
                                     )
                                 )
                             )
-                            (print m_values)
+                            ;(print m_values)
                             m_values
                         )
                 )
@@ -411,6 +411,12 @@
 )
 ;(display_board)
 ;
+(defun check_valid_move (m_hand_domino m_stack_domino)
+    (print "check_valid_move")
+    (read)
+)
+;(check_valid_move)
+;
 (defun player_play(a_values)
     (print "play")
     ;(print a_values)
@@ -429,27 +435,39 @@
                 (update_stack (get_stack a_values) (get_player_hand a_values) m_stack_index m_hand_index)
                 
             )
+            (m_valid_move
+                (check_valid_move (nth m_hand_index (get_player_hand a_values)) (nth m_stack_index (get_stack a_values)))
+            )
             (m_values
-                (list
-                    (list
-                        ;(nth 0 (nth 0 a_values))
-                        (subseq m_updated_stack 0 6)
-                        (nth 1 (nth 0 a_values))
-                        (nth 2 (nth 0 a_values))
-                        (nth 3 (nth 0 a_values))
-                        (nth 4 (nth 0 a_values))
+                (cond
+                    ((= m_valid_move 0)
+                        (print "recurse")
+                        (player_play a_values)
                     )
-                    (list
-                        ;(nth 0 (nth 1 a_values))
-                        (subseq m_updated_stack 6 12)
-                        (nth 1 (nth 1 a_values))
-                        ;(cdr(nth 2 (nth 1 a_values)))
-                        (update_hand (get_player_hand a_values) m_hand_index)
-                        (nth 3 (nth 1 a_values))
-                        (nth 4 (nth 1 a_values))
+                    ((= m_valid_move 1)
+                        (list
+                            (list
+                                ;(nth 0 (nth 0 a_values))
+                                (subseq m_updated_stack 0 6)
+                                (nth 1 (nth 0 a_values))
+                                (nth 2 (nth 0 a_values))
+                                (nth 3 (nth 0 a_values))
+                                (nth 4 (nth 0 a_values))
+                            )
+                            (list
+                                ;(nth 0 (nth 1 a_values))
+                                (subseq m_updated_stack 6 12)
+                                (nth 1 (nth 1 a_values))
+                                ;(cdr(nth 2 (nth 1 a_values)))
+                                (update_hand (get_player_hand a_values) m_hand_index)
+                                (nth 3 (nth 1 a_values))
+                                (nth 4 (nth 1 a_values))
+                            )
+                            "COMPUTER"
+                        )
                     )
-                    "COMPUTER"
                 )
+                
             )
         )
         ;(print (nth m_hand_index (get_player_hand a_values)))
@@ -463,7 +481,8 @@
 ;
 (defun bot_play(a_values)
     (print "play")
-    (print a_values)
+    ;(print a_values)
+    (display_board a_values)
     (let
         (
             (m_values
@@ -624,16 +643,14 @@
 (defun turn (a_values)
     (print "turn")
     ;(print (get_player_hand a_values))
-    (display_board a_values)
     (cond
         ((not(and (= (length (get_player_hand a_values)) 0) (= (length (get_bot_hand a_values)) 0)))
             (progn
-                (print "1")
-                (print (get_first_player a_values))
                 (cond
                     ((string= (get_first_player a_values) "HUMAN")
                         (progn
                             (print "HUMAN")
+                            ;(display_board a_values)
                             (turn (player_play a_values))
                             
                         )
@@ -641,6 +658,7 @@
                     ((string= (get_first_player a_values) "COMPUTER")
                         (progn
                             (print "COMPUTER")
+                            ;(display_board a_values)
                             (turn (bot_play a_values))
                         )
                         

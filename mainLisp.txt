@@ -722,9 +722,58 @@
 )
 ;(declare_round_winner)
 ;
+(defun check_one_to_all (a_domino a_stack)
+    ;(print (check_valid_move a_domino (car a_stack)))
+    (cond
+        ((null a_stack)
+            0
+        )
+        ((= (check_valid_move a_domino (car a_stack)) 1)
+            (print "playable")
+            (print a_domino)
+            (print (car a_stack))
+            1
+        )
+        ((not (= (check_valid_move a_domino (car a_stack)) 1))
+            (print "not playable")
+            ;(print a_domino)
+            ;(print (car a_stack))
+            (check_one_to_all a_domino (cdr a_stack))
+        )
+    )
+    
+)
+;(check_one_to_all)
+;
+(defun check_playable (a_hand a_stack)
+    (print "check_playable")
+    (cond 
+        ((null a_hand)
+            ;(print "no playable")
+            0
+        )
+        ((=(check_one_to_all (car a_hand) a_stack) 1)
+            ;(print "playable")
+            1
+        )
+        ((not (=(check_one_to_all (car a_hand) a_stack) 1))
+            (check_playable (cdr a_hand) a_stack)
+        )
+    )
+    
+)
+;(check_playable)
+;
+(defun get_all_hand (a_values)
+    (append (nth 2(nth 0 a_values)) (nth 2 (nth 1 a_values)))
+)
+;(get_all_hand)
+;
 (defun turn (a_values)
     (print "turn")
     ;(print (get_player_hand a_values))
+    (print (get_all_hand a_values))
+    (check_playable (get_all_hand a_values) (get_stack a_values))
     (cond
         ((not(and (= (length (get_player_hand a_values)) 0) (= (length (get_bot_hand a_values)) 0)))
             (progn

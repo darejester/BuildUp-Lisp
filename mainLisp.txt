@@ -411,9 +411,41 @@
 )
 ;(display_board)
 ;
-(defun check_valid_move (m_hand_domino m_stack_domino)
+(defun check_double_tile (a_domino)
+    (cond
+        ((= (nth 1 a_domino) (nth 2 a_domino))
+            1
+        )
+        ((not (= (nth 1 a_domino) (nth 2 a_domino)))
+            0
+        )
+        (t "ERROR")
+    )
+)
+;(check_double_tile)
+;
+(defun check_valid_move (a_hand_domino a_stack_domino)
     (print "check_valid_move")
-    (read)
+    ;(print a_hand_domino)
+    ;(print (check_double_tile a_hand_domino))
+    (cond
+        ((and (= (check_double_tile a_hand_domino) 0) (>= (total a_hand_domino) (total a_stack_domino)))
+            (print "condition 1")
+            1
+        )
+        ((and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 0))
+            (print "condition 2")
+            1
+        )
+        ((and (> (total a_hand_domino) (total a_stack_domino)) (and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 0)))
+            (print "condition 3")
+            1
+        )
+        ((< (total a_hand_domino) (total a_stack_domino))
+            (print "NOT VALID MOVE")
+            0
+        )
+    )
 )
 ;(check_valid_move)
 ;

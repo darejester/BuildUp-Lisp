@@ -192,7 +192,7 @@
         )
         (
             (not (null(nth 2 a_values)))
-                (
+                (progn
                     (print "no need to decide")
                     a_values
                 )
@@ -704,11 +704,14 @@
             (print "resume old tournament")
             (turn
                 (draw
-                    (set_stacks
-                        (shuffle
-                            (read_from_file)
+                    (check_first
+                        (set_stacks
+                            (shuffle
+                                (read_from_file)
+                            )
                         )
                     )
+                    
                 )
             )
             

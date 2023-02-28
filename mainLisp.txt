@@ -25,48 +25,59 @@
     ;(print (total (nth 0 (nth 1 (nth 0 a_values)))))
     ;(print (total (nth 0 (nth 1 (nth 1 a_values)))))
     (cond
-        (
-            (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
-                (progn
-                    (print "shuffle")            
-                    (let
-                        (
-                            (m_values
-                                (list
-                                    (list
-                                        (nth 0 (nth 0 a_values))
-                                        (sort (copy-list (nth 1 (nth 0 a_values))) #'(lambda (a b) (< (random 2) 1)))
-                                        (nth 2 (nth 0 a_values))
-                                        (nth 3 (nth 0 a_values))
-                                        (nth 4 (nth 0 a_values))
+        ((and (null(get_player_hand a_values)) (null (get_bot_hand a_values)))
+            (cond
+                (
+                    (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                        (progn
+                            (print "shuffle")            
+                            (let
+                                (
+                                    (m_values
+                                        (list
+                                            (list
+                                                (nth 0 (nth 0 a_values))
+                                                (sort (copy-list (nth 1 (nth 0 a_values))) #'(lambda (a b) (< (random 2) 1)))
+                                                (nth 2 (nth 0 a_values))
+                                                (nth 3 (nth 0 a_values))
+                                                (nth 4 (nth 0 a_values))
+                                            )
+                                            (list
+                                                (nth 0 (nth 1 a_values))
+                                                (sort (copy-list (nth 1 (nth 1 a_values))) #'(lambda (a b) (< (random 2) 1)))
+                                                (nth 2 (nth 1 a_values))
+                                                (nth 3 (nth 1 a_values))
+                                                (nth 4 (nth 1 a_values))
+                                            )
+                                            (nth 2 a_values)
+                                            
+                                        )
                                     )
-                                    (list
-                                        (nth 0 (nth 1 a_values))
-                                        (sort (copy-list (nth 1 (nth 1 a_values))) #'(lambda (a b) (< (random 2) 1)))
-                                        (nth 2 (nth 1 a_values))
-                                        (nth 3 (nth 1 a_values))
-                                        (nth 4 (nth 1 a_values))
-                                    )
-                                    (nth 2 a_values)
-                                    
                                 )
-                            )
+                                (shuffle m_values)
+                                ;(print m_values)
+                            )   
                         )
-                        (shuffle m_values)
-                        ;(print m_values)
-                    )   
                 )
-        )
-        (
-            (not (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values))))))
-                (progn
-                    (print "no need to shuffle")
-                    a_values
+                (
+                    (not (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values))))))
+                        (progn
+                            (print "no need to shuffle")
+                            a_values
+                        )
+                    
                 )
-            
+                (t (print "ERROR"))
+            )
         )
-        (t (print "ERROR"))
+        ((not (and (null(get_player_hand a_values)) (null (get_bot_hand a_values))))
+            (progn
+                (print "no need to shuffle")
+                a_values
+            )
+        )
     )
+    
 )
 ;(shuffle)
 ;
@@ -670,7 +681,9 @@
         )
         ((= x 1) 
             (print "resume old tournament")
-            (read_from_file)
+            (shuffle
+                (read_from_file)
+            )
         )
         (t "wrong input. Validate")
     )

@@ -112,6 +112,37 @@
 )
 (generate_values)
 ;
+(defun generate_values_cont (a_values)  
+    ;put all in let function
+    (print "generate values cont")
+    (let(
+            (m_values
+                (list
+                    (list
+                        ()
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "W" sublist)) (generate_boneyard))
+                        ()
+                        0
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        ()
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "B" sublist)) (generate_boneyard))
+                        ()
+                        0
+                        (nth 4 (nth 1 a_values))
+                    )
+                )
+            )
+        )
+        m_values
+        ;(print m_values)
+    )
+)
+;(generate_values_cont)
+;
 (defun check_first (a_values)  
     ;put all in let function
     (print "check first")
@@ -732,41 +763,78 @@
 )
 ;(read_from_file)
 ;
+(defun tournament (a_values)
+    (print "tournament")
+    (print "do you want to play another tournament? (1 = yes, 0 = no)")
+    (let
+        (
+            (ans (read))
+        )
+        (cond
+            ((= ans 1)
+                (progn
+                    (print "continue to next tournament")
+                    (turn
+                        (draw
+                            (check_first
+                                (set_stacks
+                                   (shuffle
+                                        (generate_values_cont a_values)
+                                    ) 
+                                )
+                                
+                            )
+                        )
+                    )
+                )
+            )
+            ((= ans 0)
+                (display_board a_values)
+                ;display winner too
+            )
+        )
+    )
+)
+;(tournament)
+;
 (defun game (x)
     (cond 
         ((= x 0) 
             (print "start new tournament")
-            (turn
-                (draw
-                    (check_first
-                        (set_stacks
-                           (shuffle
-                                (generate_values)
-                            ) 
+            (tournament
+                (turn
+                    (draw
+                        (check_first
+                            (set_stacks
+                               (shuffle
+                                    (generate_values)
+                                ) 
+                            )
+                            
                         )
-                        
                     )
                 )
             )
+            
             
         )
         ((= x 1) 
             (print "resume old tournament")
-            (turn
-                (draw
-                    (check_first
-                        (set_stacks
-                            (shuffle
-                                (read_from_file)
+            (tournament
+                (turn
+                    (draw
+                        (check_first
+                            (set_stacks
+                                (shuffle
+                                    (read_from_file)
+                                )
                             )
                         )
+                        
                     )
-                    
-                )
+                )     
             )
-            
-            
-            
+                  
         )
         (t "wrong input. Validate")
     )

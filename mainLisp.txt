@@ -484,81 +484,295 @@
     (print "play")
     ;(print a_values)
     (display_board a_values)
-    (print "Enter the index of the domino in hand that you want to play")
-    (print "Enter the index of the stack that you want to place on")
+    (print "get help? 1= yes, 0=no")
     (let*
         (
-            (m_hand_index
-                (read)
-            )
-            (m_stack_index
-                (read)
-            )
-            (m_updated_stack
-                (update_stack (get_stack a_values) (get_player_hand a_values) m_stack_index m_hand_index)
-                
-            )
-            (m_valid_move
-                (check_valid_move (nth m_hand_index (get_player_hand a_values)) (nth m_stack_index (get_stack a_values)))
-            )
-            (m_values
-                (cond
-                    ((= m_valid_move 0)
-                        (print "recurse")
-                        (player_play a_values)
-                    )
-                    ((= m_valid_move 1)
-                        (list
-                            (list
-                                ;(nth 0 (nth 0 a_values))
-                                (subseq m_updated_stack 0 6)
-                                (nth 1 (nth 0 a_values))
-                                (nth 2 (nth 0 a_values))
-                                (nth 3 (nth 0 a_values))
-                                (nth 4 (nth 0 a_values))
+            (m_ans (read))
+        )
+        (cond
+            ((= m_ans 0)
+                (print "Enter the index of the domino in hand that you want to play")
+                (print "Enter the index of the stack that you want to place on")
+                (let*
+                    (
+                        (m_hand_index
+                            (read)
+                        )
+                        (m_stack_index
+                            (read)
+                        )
+                        (m_updated_stack
+                            (update_stack (get_stack a_values) (get_player_hand a_values) m_stack_index m_hand_index)
+                            
+                        )
+                        (m_valid_move
+                            (check_valid_move (nth m_hand_index (get_player_hand a_values)) (nth m_stack_index (get_stack a_values)))
+                        )
+                        (m_values
+                            (cond
+                                ((= m_valid_move 0)
+                                    (print "recurse")
+                                    (player_play a_values)
+                                )
+                                ((= m_valid_move 1)
+                                    (list
+                                        (list
+                                            ;(nth 0 (nth 0 a_values))
+                                            (subseq m_updated_stack 0 6)
+                                            (nth 1 (nth 0 a_values))
+                                            (nth 2 (nth 0 a_values))
+                                            (nth 3 (nth 0 a_values))
+                                            (nth 4 (nth 0 a_values))
+                                        )
+                                        (list
+                                            ;(nth 0 (nth 1 a_values))
+                                            (subseq m_updated_stack 6 12)
+                                            (nth 1 (nth 1 a_values))
+                                            ;(cdr(nth 2 (nth 1 a_values)))
+                                            (update_hand (get_player_hand a_values) m_hand_index)
+                                            (nth 3 (nth 1 a_values))
+                                            (nth 4 (nth 1 a_values))
+                                        )
+                                        "COMPUTER"
+                                    )
+                                )
                             )
-                            (list
-                                ;(nth 0 (nth 1 a_values))
-                                (subseq m_updated_stack 6 12)
-                                (nth 1 (nth 1 a_values))
-                                ;(cdr(nth 2 (nth 1 a_values)))
-                                (update_hand (get_player_hand a_values) m_hand_index)
-                                (nth 3 (nth 1 a_values))
-                                (nth 4 (nth 1 a_values))
-                            )
-                            "COMPUTER"
+                            
                         )
                     )
+                    ;(print (nth m_hand_index (get_player_hand a_values)))
+                    ;(print (nth m_stack_index (get_stack a_values)))
+                    ;(print m_updated_stack)
+                    
+                    m_values
                 )
-                
+            )
+            ((= m_ans 1)
+                (let*
+                    (
+                        (m_good_move
+                            (strategy (get_player_hand a_values) (get_stack a_values))
+                        )
+                         (m_updated_stack
+                            (update_stack (get_stack a_values) (get_player_hand a_values) (position (second m_good_move) (get_stack a_values)) (position (first m_good_move) (get_player_hand a_values)))   
+                        )
+                        (m_values
+                            (list
+                                (list
+                                    ;(nth 0 (nth 0 a_values))
+                                    (subseq m_updated_stack 0 6)
+                                    (nth 1 (nth 0 a_values))
+                                    (nth 2 (nth 0 a_values))
+                                    (nth 3 (nth 0 a_values))
+                                    (nth 4 (nth 0 a_values))
+                                )
+                                (list
+                                    ;(nth 0 (nth 1 a_values))
+                                    (subseq m_updated_stack 6 12)
+                                    (nth 1 (nth 1 a_values))
+                                    (update_hand (get_player_hand a_values) (position (first m_good_move) (get_player_hand a_values)))
+                                    (nth 3 (nth 1 a_values))
+                                    (nth 4 (nth 1 a_values))
+                                )
+                                "COMPUTER"
+                            )
+                        )
+                    )
+                    ;(print m_good_move)
+                    m_values
+                )
             )
         )
-        ;(print (nth m_hand_index (get_player_hand a_values)))
-        ;(print (nth m_stack_index (get_stack a_values)))
-        ;(print m_updated_stack)
-        
-        m_values
     )
+   
 )
 ;(player_play)
+;
+(defun non_double_move (a_hand_domino a_stack_domino)
+    (print "non_double_move")
+    
+    (cond
+        ((or (NULL a_hand_domino) (NULL a_stack_domino))
+            NIL
+        )
+        ((string= (get_color a_hand_domino) (get_color a_stack_domino))
+            ;(print "player's domino")
+            NIL
+        )
+        ((= (check_double_tile a_hand_domino) 1)
+            ;(print "double tile")
+            NIL
+        )
+        ((= (check_double_tile a_hand_domino) 0)
+            
+            (cond
+                ((and (>= (total a_hand_domino) (total a_stack_domino)) (check_valid_move a_hand_domino a_stack_domino))
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    (print (list a_hand_domino a_stack_domino))
+                    (print "hit")
+                    (list a_hand_domino a_stack_domino)
+                )
+                ((< (total a_hand_domino) (total a_stack_domino))
+                    NIL
+                )
+            )
+        )
+        
+        
+    )
+)
+;(non_double_move)
+;
+(defun double_move (a_hand_domino a_stack_domino)
+   (print "double_move")
+    
+   (cond
+        ((or (NULL a_hand_domino) (NULL a_stack_domino))
+            NIL
+        )
+        ((string= (get_color a_hand_domino) (get_color a_stack_domino))
+            ;(print "player's domino")
+            NIL
+        )
+        ((= (check_double_tile a_hand_domino) 0)
+            ;(print "non-double tile")
+            NIL
+        )
+        ((and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 1))
+            
+            (cond
+                ((and (<= (total a_hand_domino) (total a_stack_domino)) (check_valid_move a_hand_domino a_stack_domino))
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    (print (list a_hand_domino a_stack_domino))
+                    (print "hit")
+                    (list a_hand_domino a_stack_domino)
+                )
+                ((> (total a_hand_domino) (total a_stack_domino))
+                    NIL
+                )
+            )
+        )
+        
+        
+    )
+)
+;(double_move)
+;
+(defun force_move (a_hand_domino a_stack_domino) 
+   (cond
+        ((or (NULL a_hand_domino) (NULL a_stack_domino))
+            NIL
+        )
+        ((= (check_valid_move a_hand_domino a_stack_domino)1)
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    (print (list a_hand_domino a_stack_domino))
+                    (print "hit")
+                    (list a_hand_domino a_stack_domino)
+        )
+    )
+)
+;(force_move)
+;
+(defun cross_check (a_hand_domino a_stack)
+    (print "cross_check")
+    (let*
+        (
+            (non_double_play
+                (non_double_move a_hand_domino (car a_stack))
+            )
+            (double_play
+                (double_move a_hand_domino (car a_stack))
+            )
+            (m_force_play
+                (force_move a_hand_domino (car a_stack))
+            )
+        )
+        (cond
+            ((NULL a_stack)
+                NIL
+            )
+            ( (and (and (NULL non_double_play) (NULL double_play)) (NULL m_force_play))
+                (cross_check a_hand_domino (cdr a_stack))
+                
+            )
+            ((and (NULL non_double_play) (NULL double_play))
+                (print "force play")
+                m_force_play
+                
+            )
+            ((not (NULL non_double_play))
+                ;(print "non_double_play")
+                (print non_double_play)
+                non_double_play
+                
+            )
+            ((not (NULL double_play))
+                ;(print "double_play")
+                (print double_play)
+                double_play
+            )
+            
+            
+        )
+    )
+)
+;(cross-check)
+;
+(defun strategy (a_hand a_stack)
+    (print "strategy")
+    (let*
+        (
+            (a_yes_strategic
+                (cross_check (car a_hand) a_stack)
+            )
+        )
+        (cond
+            ((NULL a_hand)
+                NIL
+            )
+            ((not (NULL a_yes_strategic))
+                (print a_yes_strategic)
+                a_yes_strategic
+            )
+            ((NULL a_yes_strategic)
+                (print "cond 2")
+                (print a_yes_strategic)
+                (strategy (cdr a_hand) a_stack)
+            )
+            
+        )
+    )
+)
+;(strategy)
 ;
 (defun bot_play(a_values)
     (print "play")
     ;(print a_values)
     (display_board a_values)
-    (let
+    (let*
         (
+            (m_good_move
+                (strategy (get_bot_hand a_values) (get_stack a_values))
+            )
+             (m_updated_stack
+                (update_stack (get_stack a_values) (get_bot_hand a_values) (position (second m_good_move) (get_stack a_values)) (position (first m_good_move) (get_bot_hand a_values)))   
+            )
             (m_values
                 (list
                     (list
-                        (nth 0 (nth 0 a_values))
+                        ;(nth 0 (nth 0 a_values))
+                        (subseq m_updated_stack 0 6)
                         (nth 1 (nth 0 a_values))
-                        (cdr(nth 2 (nth 0 a_values)))
+                        (update_hand (get_bot_hand a_values) (position (first m_good_move) (get_bot_hand a_values)))
                         (nth 3 (nth 0 a_values))
                         (nth 4 (nth 0 a_values))
                     )
                     (list
-                        (nth 0 (nth 1 a_values))
+                        ;(nth 0 (nth 1 a_values))
+                        (subseq m_updated_stack 6 12)
                         (nth 1 (nth 1 a_values))
                         (nth 2 (nth 1 a_values))
                         (nth 3 (nth 1 a_values))
@@ -568,9 +782,10 @@
                 )
             )
         )
-        
+        (print m_good_move)
         m_values
     )
+
 )
 ;(bot_play)
 ;

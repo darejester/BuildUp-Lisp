@@ -616,7 +616,7 @@
                     ;(print a_hand_domino)
                     ;(print a_stack_domino)
                     ;(print (list a_hand_domino a_stack_domino))
-                    (print "hit")
+                    (print "hit non_double")
                     (list a_hand_domino a_stack_domino)
                 )
                 ((< (total a_hand_domino) (total a_stack_domino))
@@ -645,6 +645,21 @@
             ;(print "non-double tile")
             NIL
         )
+        ((and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 0))
+            
+            (cond
+                ((and (< (total a_hand_domino) (total a_stack_domino)) (check_valid_move a_hand_domino a_stack_domino))
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    (print (list a_hand_domino a_stack_domino))
+                    (print "hit double")
+                    (list a_hand_domino a_stack_domino)
+                )
+                ((> (total a_hand_domino) (total a_stack_domino))
+                    NIL
+                )
+            )
+        )
         ((and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 1))
             
             (cond
@@ -652,7 +667,7 @@
                     ;(print a_hand_domino)
                     ;(print a_stack_domino)
                     (print (list a_hand_domino a_stack_domino))
-                    (print "hit")
+                    (print "hit double")
                     (list a_hand_domino a_stack_domino)
                 )
                 ((> (total a_hand_domino) (total a_stack_domino))
@@ -662,11 +677,13 @@
         )
         
         
+        
     )
 )
 ;(double_move)
 ;
 (defun force_move (a_hand_domino a_stack_domino) 
+    (print "force_move")
    (cond
         ((or (NULL a_hand_domino) (NULL a_stack_domino))
             NIL
@@ -675,7 +692,7 @@
                     ;(print a_hand_domino)
                     ;(print a_stack_domino)
                     (print (list a_hand_domino a_stack_domino))
-                    (print "hit")
+                    (print "hit force")
                     (list a_hand_domino a_stack_domino)
         )
     )
@@ -790,7 +807,7 @@
                 )
             )
         )
-        (print m_good_move)
+        ;(print m_good_move)
         m_values
     )
 
@@ -995,12 +1012,36 @@
 )
 ;(get_all_hand)
 ;
+(defun save (a_values)
+    (print "do you want to save? 1 = yes, 0 = no")
+    (let
+        (
+            (m_ans (read))
+        )
+        (cond
+            ((= m_ans 1)
+                (print a_values)
+                NIL
+            )
+            ((= m_ans 0)
+                a_values
+            )
+            (t "ERROR")
+        )
+    )
+)
+;(save)
+;
 (defun turn (a_values)
     (print "turn=============================================================================================")
     ;(print (get_player_hand a_values))
     ;(print (get_all_hand a_values))
     ;(check_playable (get_all_hand a_values) (get_stack a_values))
+    ;(save a_values)
     (cond
+        ((null a_values)
+            NIL
+        )
         ((= (check_playable (get_all_hand a_values) (get_stack a_values)) 1)
             (progn
                 ;(read)
@@ -1011,11 +1052,11 @@
                             ;(display_board a_values) 
                             (cond
                                 ((= (check_playable (get_player_hand a_values) (get_stack a_values)) 1)
-                                    (turn (player_play a_values))
+                                    (turn (save(player_play a_values)))
                                 )
                                 ((= (check_playable (get_player_hand a_values) (get_stack a_values)) 0)
                                     (print "no playable move, skip turn")
-                                    (turn (bot_play a_values))
+                                    (turn (save(bot_play a_values)))
                                 )
                             )
                         )
@@ -1026,11 +1067,11 @@
                             ;(display_board a_values)
                             (cond
                                 ((= (check_playable (get_bot_hand a_values) (get_stack a_values)) 1)
-                                    (turn (bot_play a_values))
+                                    (turn (save(bot_play a_values)))
                                 )
                                 ((= (check_playable (get_bot_hand a_values) (get_stack a_values)) 0)
                                     (print "no playable move, skip turn")
-                                    (turn (player_play a_values))
+                                    (turn (save(player_play a_values)))
                                 )
                             )
                         )
@@ -1097,37 +1138,46 @@
 (defun tournament (a_values)
     (print "tournament")
     (print "do you want to play another tournament? (1 = yes, 0 = no)")
-    (let*
-        (
-            (ans (read))
-        )
-        (cond
-            ((= ans 1)
-                (progn
-                    (print "continue to next tournament")
-                    (tournament
-                        (turn
-                            (draw
-                                (check_first
-                                    (set_stacks
-                                       (shuffle
-                                            (generate_values_cont a_values)
-                                        ) 
+    (cond
+        ((not (null a_values))
+            (let*
+                (
+                    (ans (read))
+                )
+                (cond
+                    ((= ans 1)
+                        (progn
+                            (print "continue to next tournament")
+                            (tournament
+                                (turn
+                                    (draw
+                                        (check_first
+                                            (set_stacks
+                                               (shuffle
+                                                    (generate_values_cont a_values)
+                                                ) 
+                                            )
+                                            
+                                        )
                                     )
-                                    
                                 )
                             )
+                            
                         )
                     )
-                    
+                    ((= ans 0)
+                        (display_board a_values)
+                        (declare_tournament_winner a_values)
+                    )
                 )
             )
-            ((= ans 0)
-                (display_board a_values)
-                (declare_tournament_winner a_values)
-            )
         )
+        ((null a_values)
+            NIL
+        )
+        (t "ERROR")
     )
+    
 )
 ;(tournament)
 ;

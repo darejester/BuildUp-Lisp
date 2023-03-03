@@ -885,7 +885,9 @@
 ;
 (defun update_tournament_score (a_values)
     (print "update_tournament_score")
+    (print "BOT SCORE: ")
     (print (get_bot_score a_values))
+    (print "PLAYER SCORE: ")
     (print (get_player_score a_values))
     (let*
         (
@@ -977,7 +979,7 @@
             1
         )
         ((not (= (check_valid_move a_domino (car a_stack)) 1))
-            ;(print "not playable")
+            (print "not playable")
             ;(print a_domino)
             ;(print (car a_stack))
             (check_one_to_all a_domino (cdr a_stack))

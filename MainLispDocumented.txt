@@ -1,0 +1,1715 @@
+;     ************************************************************
+;     * Name:  John Matthew Sahagun                              *
+;     * Project:  BuildUp: Lisp                                  *
+;     * Class:  OPL CMPS-366-01                                  *
+;     * Date:  3/5/2023                                          *
+;     ************************************************************
+;
+; *********************************************************************
+;Function Name: generate_boneyard
+;Purpose: to return the list of possible dominos
+;Parameters:
+;            none
+;Return Value: the list of possible dominos
+;Algorithm:
+;            makes a list of possible dominos
+;Assistance Received: none
+; *********************************************************************
+(defun generate_boneyard ()  
+    '(
+    (0 0) (0 1) (0 2) (0 3) (0 4) (0 5) (0 6)
+          (1 1) (1 2) (1 3) (1 4) (1 5) (1 6)
+                (2 2) (2 3) (2 4) (2 5) (2 6)
+                      (3 3) (3 4) (3 5) (3 6)
+                            (4 4) (4 5) (4 6)
+                                  (5 5) (5 6)
+                                        (6 6)
+    )
+)
+(generate_boneyard)
+;
+; *********************************************************************
+;Function Name: total
+;Purpose: to return the total number of pips a domino has
+;Parameters:
+;            a_domino, a list that consists of the pips and color that a domino has
+;Return Value: the sum of the pips that a domino has
+;Algorithm:
+;            adds the element in index 1 and index 2 of a_domino and returns it
+;Assistance Received: none
+; *********************************************************************
+(defun total (a_domino)  
+   (+ (nth 1 a_domino) (nth 2 a_domino))
+)
+;(total '(2 3))
+;
+; *********************************************************************
+;Function Name: get_color
+;Purpose: to return the color of the domino
+;Parameters:
+;            a_domino, a list that consists of the pips and color that a domino has
+;Return Value: the color of the domino
+;Algorithm:
+;            returns element in index 0 of a_domino
+;Assistance Received: none
+; *********************************************************************
+(defun get_color (a_domino)  
+   (nth 0 a_domino)
+)
+;(get_color)
+;
+; *********************************************************************
+;Function Name: shuffle
+;Purpose: to return a list that consists of all of game values with each players' boneyards shuffled
+;Parameters:
+;            a_values, a list that consists of all of the game values 
+;Return Value: m_values, a list of all of the game values with each players' boneyards shuffled
+;Algorithm:
+;            uses sort, copy-list, and a lambda expression to shuffle each element of the players' boneyards
+;Assistance Received: none
+; *********************************************************************
+(defun shuffle (a_values)  
+    (print "shuffle")
+    ;(print (total (nth 0 (nth 1 (nth 0 a_values)))))
+    ;(print (total (nth 0 (nth 1 (nth 1 a_values)))))
+    (cond
+        ((or (null(get_player_hand a_values)) (null (get_bot_hand a_values)))
+            (cond
+                (
+                    (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                        (progn
+                            ;(print "shuffle")            
+                            (let
+                                (
+                                    (m_values
+                                        (list
+                                            (list
+                                                (nth 0 (nth 0 a_values))
+                                                (sort (copy-list (nth 1 (nth 0 a_values))) #'(lambda (a b) (< (random 2) 1)))
+                                                (nth 2 (nth 0 a_values))
+                                                (nth 3 (nth 0 a_values))
+                                                (nth 4 (nth 0 a_values))
+                                            )
+                                            (list
+                                                (nth 0 (nth 1 a_values))
+                                                (sort (copy-list (nth 1 (nth 1 a_values))) #'(lambda (a b) (< (random 2) 1)))
+                                                (nth 2 (nth 1 a_values))
+                                                (nth 3 (nth 1 a_values))
+                                                (nth 4 (nth 1 a_values))
+                                            )
+                                            (nth 2 a_values)
+                                            
+                                        )
+                                    )
+                                )
+                                (print m_values)
+                                (shuffle m_values)
+                                
+                            )   
+                        )
+                )
+                (
+                    (not (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values))))))
+                        (progn
+                            (print "no need to shuffle")
+                            a_values
+                        )
+                    
+                )
+                (t (print "ERROR"))
+            )
+        )
+        ((not (and (null(get_player_hand a_values)) (null (get_bot_hand a_values))))
+            (progn
+                (print "no need to shuffle")
+                a_values
+            )
+        )
+    )
+    
+)
+;(shuffle)
+;
+; *********************************************************************
+;Function Name: generate_values
+;Purpose: to generate a list that can hold all of the game values with each players' respective boneyards filled with values from the generate_boneyard function
+;Parameters:
+;            none
+;Return Value: m_values, a list of all of the game values with each players' boneyards generated
+;Algorithm:
+;            calls generate_boneyard and uses mapcar to add the respective colors for each players' dominos
+;Assistance Received: none
+; *********************************************************************
+(defun generate_values ()  
+    ;put all in let function
+    (print "generate values")
+    (let(
+            (m_values
+                (list
+                    (list
+                        ()
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "W" sublist)) (generate_boneyard))
+                        ()
+                        0
+                        0
+                    )
+                    (list
+                        ()
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "B" sublist)) (generate_boneyard))
+                        ()
+                        0
+                        0
+                    )
+                )
+            )
+        )
+        m_values
+        ;(print m_values)
+    )
+)
+(generate_values)
+;
+; *********************************************************************
+;Function Name: generate_values_cont
+;Purpose: to generate a list that holds all of the game values with each players' respective boneyards filled with values from the generate_boneyard function and the tournament score of each player 
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: m_values, a list of all of the game values with each players' boneyards generated and scores recorded
+;Algorithm:
+;            calls generate_boneyard and uses mapcar to add the respective colors for each players' dominos
+;            sets the tournament score for each player with the same value from a_values
+;Assistance Received: none
+; *********************************************************************
+(defun generate_values_cont (a_values)  
+    ;put all in let function
+    (print "generate values cont")
+    (let(
+            (m_values
+                (list
+                    (list
+                        ()
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "W" sublist)) (generate_boneyard))
+                        ()
+                        0
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        ()
+                        ;(generate_boneyard)
+                        (mapcar (lambda (sublist) (cons "B" sublist)) (generate_boneyard))
+                        ()
+                        0
+                        (nth 4 (nth 1 a_values))
+                    )
+                )
+            )
+        )
+        m_values
+        ;(print m_values)
+    )
+)
+;(generate_values_cont)
+;
+; *********************************************************************
+;Function Name: check_first
+;Purpose: to set which player goes first
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: m_values, a list of all of the game values with the player who plays first recorded
+;Algorithm:
+;            checks if a_values already has a first player recorded
+;            compares the first domino in each players' boneyards and picks whoever has a higher total as the first player
+;Assistance Received: none
+; *********************************************************************
+(defun check_first (a_values)  
+    ;put all in let function
+    (print "check first")
+    ;(print a_values)
+    (cond
+        (
+            (null(nth 2 a_values))
+                (progn
+                    ;(print "decide who goes first")
+                    (cond
+                        (
+                            (> (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                (progn
+                                    (let
+                                        (
+                                            (m_values
+                                                (list
+                                                    (list
+                                                        (nth 0 (nth 0 a_values))
+                                                        (nth 1 (nth 0 a_values))
+                                                        (nth 2 (nth 0 a_values))
+                                                        (nth 3 (nth 0 a_values))
+                                                        (nth 4 (nth 0 a_values))
+                                                    )
+                                                    (list
+                                                        (nth 0 (nth 1 a_values))
+                                                        (nth 1 (nth 1 a_values))
+                                                        (nth 2 (nth 1 a_values))
+                                                        (nth 3 (nth 1 a_values))
+                                                        (nth 4 (nth 1 a_values))
+                                                    )
+                                                    "COMPUTER"
+                                                )
+                                            )
+                                        )
+                                        ;(print m_values)
+                                        m_values
+                                    )   
+                                
+                                )
+                        )
+                        (
+                            (< (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                (progn
+                                    (let
+                                        (
+                                            (m_values
+                                                (list
+                                                    (list
+                                                        (nth 0 (nth 0 a_values))
+                                                        (nth 1 (nth 0 a_values))
+                                                        (nth 2 (nth 0 a_values))
+                                                        (nth 3 (nth 0 a_values))
+                                                        (nth 4 (nth 0 a_values))
+                                                    )
+                                                    (list
+                                                        (nth 0 (nth 1 a_values))
+                                                        (nth 1 (nth 1 a_values))
+                                                        (nth 2 (nth 1 a_values))
+                                                        (nth 3 (nth 1 a_values))
+                                                        (nth 4 (nth 1 a_values))
+                                                    )
+                                                    "HUMAN"
+                                                )
+                                            )
+                                        )
+                                        ;(print m_values)
+                                        m_values
+                                    )   
+                                
+                                )
+                        )
+                        (t "ERROR")
+                    )
+                    
+                )
+            
+        )
+        (
+            (not (null(nth 2 a_values)))
+                (progn
+                    (print "no need to decide")
+                    a_values
+                )
+        )
+        (t "ERROR")
+    )
+)
+;(check_first)
+;
+; *********************************************************************
+;Function Name: set_stacks
+;Purpose: to set all of the 12 stacks
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: m_values, a list of all of the game values with the 12 stacks (6 per player) filled with values from the respective player's boneyard
+;Algorithm:
+;            checks if a_values already has a the 12 stacks filled
+;            both players set their stacks with the first 6 values from their boneyard and updates their boneyard
+;Assistance Received: none
+; *********************************************************************
+(defun set_stacks (a_values)
+    (print "set_stacks")
+    (cond
+        ((and (null (nth 0 (nth 0 a_values))) (null (nth 0 (nth 1 a_values))))
+            (let
+                (
+                    (m_values
+                        (list
+                            (list
+                                (subseq (nth 1 (nth 0 a_values))0 6)
+                                (subseq (nth 1 (nth 0 a_values))6)
+                                (nth 2 (nth 0 a_values))
+                                (nth 3 (nth 0 a_values))
+                                (nth 4 (nth 0 a_values))
+                            )
+                            (list
+                                (subseq (nth 1 (nth 1 a_values))0 6)
+                                (subseq (nth 1 (nth 1 a_values))6)
+                                (nth 2 (nth 1 a_values))
+                                (nth 3 (nth 1 a_values))
+                                (nth 4 (nth 1 a_values))
+                            )
+                            (nth 2 a_values)
+                        )
+                        
+                    )
+                )
+                m_values
+            )
+        )
+        ((not (and (null (nth 0 (nth 0 a_values))) (null (nth 0 (nth 1 a_values)))))
+            (print "no need to set stacks")
+            a_values
+        )
+    )
+    
+)
+;(set_stacks)
+;
+; *********************************************************************
+;Function Name: draw
+;Purpose: to set players hand with the right number of dominos (6-6-6-4)
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: m_values, a list of all of the game values with each players' hands filled with the dominos in their boneyard (6-6-6-4)
+;Algorithm:
+;            checks if players need to draw
+;            both players set their hands with the right number of dominos from their boneyard and updates their boneyard
+;Assistance Received: none
+; *********************************************************************
+(defun draw (a_values)
+    ;put all in let function
+    (print "draw")
+    ;(print a_values)
+    (cond
+        ((or (null (get_bot_hand a_values)) (null (get_player_hand a_values)))
+            (cond 
+                (
+                    (> (length (nth 1(nth 0 a_values))) 6)
+                        (let
+                            (
+                                (m_values
+                                    (list
+                                        (list
+                                            (nth 0 (nth 0 a_values))
+                                            (subseq (nth 1 (nth 0 a_values))6)
+                                            (subseq (nth 1 (nth 0 a_values))0 6)
+                                            (nth 3 (nth 0 a_values))
+                                            (nth 4 (nth 0 a_values))
+                                        )
+                                        (list
+                                            (nth 0 (nth 1 a_values))
+                                            (subseq (nth 1 (nth 1 a_values))6)
+                                            (subseq (nth 1 (nth 1 a_values))0 6)
+                                            (nth 3 (nth 1 a_values))
+                                            (nth 4 (nth 1 a_values))
+                                        )
+                                        (nth 2 a_values)
+                                    )
+                                    
+                                )
+                            )
+                            ;(print m_values)
+                            m_values
+                        )
+                )
+                (
+                    (< (length (nth 1(nth 0 a_values))) 6) 
+                        (let
+                            (
+                                (m_values
+                                    (list
+                                        (list
+                                            (nth 0 (nth 0 a_values))
+                                            (subseq (nth 1 (nth 0 a_values))4)
+                                            (subseq (nth 1 (nth 0 a_values))0 4)
+                                            (nth 3 (nth 0 a_values))
+                                            (nth 4 (nth 0 a_values))
+                                        )
+                                        (list
+                                            (nth 0 (nth 1 a_values))
+                                            (subseq (nth 1 (nth 1 a_values))4)
+                                            (subseq (nth 1 (nth 1 a_values))0 4)
+                                            (nth 3 (nth 1 a_values))
+                                            (nth 4 (nth 1 a_values))
+                                        )
+                                        (nth 2 a_values)
+                                    )
+                                )
+                            )
+                            ;(print m_values)
+                            m_values
+                        )
+                )
+                (t "ERROR")
+            )
+        )
+        ((not(or (null (get_bot_hand a_values)) (null (get_player_hand a_values))))
+            (print "no need to draw")
+            a_values
+        )
+    )
+    
+)
+;(draw)
+;
+; *********************************************************************
+;Function Name: get_player_boneyard
+;Purpose: to return the boneyard of the human player from a_values
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: a list that contains the elements of the human player's boneyard
+;Algorithm:
+;            goes to index 1 of a_values and then goes to the index 1 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_player_boneyard(a_values)
+    (nth 1 (nth 1 a_values))
+)
+;(get_player_boneyard)
+;
+; *********************************************************************
+;Function Name: get_player_hand
+;Purpose: to return the hand of the human player from a_values
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: a list that contains the elements of the human player's hand
+;Algorithm:
+;            goes to index 1 of a_values and then goes to the index 2 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_player_hand(a_values)
+    (nth 2 (nth 1 a_values))
+)
+;(get_player_hand)
+;
+; *********************************************************************
+;Function Name: get_bot_boneyard
+;Purpose: to return the boneyard of the bot player from a_values
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: a list that contains the elements of the bot player's boneyard
+;Algorithm:
+;            goes to index 0 of a_values and then goes to the index 1 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_bot_boneyard(a_values)
+    (nth 1 (nth 0 a_values))
+)
+;(get_bot_boneyard)
+;
+; *********************************************************************
+;Function Name: get_bot_hand
+;Purpose: to return the hand of the bot player from a_values
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: a list that contains the elements of the bot player's hand
+;Algorithm:
+;            goes to index 1 of a_values and then goes to the index 2 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_bot_hand(a_values)
+    (nth 2 (nth 0 a_values))
+)
+;(get_bot_hand)
+;
+; *********************************************************************
+;Function Name: get_first_player
+;Purpose: to which player plays next
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: the element that has the next player's name
+;Algorithm:
+;            goes to index 2 of a_values
+;Assistance Received: none
+; *********************************************************************
+(defun get_first_player(a_values)
+    (nth 2 a_values)
+)
+;(get_first_player)
+;
+; *********************************************************************
+;Function Name: get_stack
+;Purpose: to return the elements of all 12 stacks
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: a list that contains all elements of all 12 stacks
+;Algorithm:
+;            goes to the indexes that correspond to each players' stacks and appends them together
+;Assistance Received: none
+; *********************************************************************
+(defun get_stack(a_values)
+    (append (nth 0(nth 0 a_values)) (nth 0 (nth 1 a_values)))
+)
+;(get_stack)
+;
+; *********************************************************************
+;Function Name: update_hand
+;Purpose: to update the any given hand with the right values
+;Parameters:
+;            a_hand, a list that corresponds to the hand of any player 
+;            a_index, the index of the domino that needs to be removed from the hand
+;Return Value: a list that doesnt have the element that a_index is referring to
+;Algorithm:
+;            gets the values from 0 to a_index and appends it with the values from the rest of a_hand skipping a_index
+;Assistance Received: none
+; *********************************************************************
+(defun update_hand(a_hand a_index)
+    (append (subseq a_hand 0 a_index)(subseq a_hand (1+ a_index)))
+)
+;(update_hand)
+;
+; *********************************************************************
+;Function Name: get_bot_score
+;Purpose: to return bot's round score
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: an element that corresponds to the bot's round score
+;Algorithm:
+;            goes to index 0 of a_values and then goes to index 3 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_bot_score(a_values)
+    (nth 3 (nth 0 a_values))
+)
+;(get_bot_score)
+;
+; *********************************************************************
+;Function Name: get_player_score
+;Purpose: to return bot's round score
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: an element that corresponds to the player's round score
+;Algorithm:
+;            goes to index 1 of a_values and then goes to index 3 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_player_score(a_values)
+    (nth 3 (nth 1 a_values))
+)
+;(get_player_score)
+;
+; *********************************************************************
+;Function Name: get_bot_tournament_score
+;Purpose: to return bot's tournament score
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: an element that corresponds to the bot's tournament score
+;Algorithm:
+;            goes to index 0 of a_values and then goes to index 4 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_bot_tournament_score(a_values)
+    (nth 4 (nth 0 a_values))
+)
+;(get_bot_tournament_score)
+;
+; *********************************************************************
+;Function Name: get_player_tournament_score
+;Purpose: to return bot's tournament score
+;Parameters:
+;            a_values, a list that holds all of the game values 
+;Return Value: an element that corresponds to the player's tournament score
+;Algorithm:
+;            goes to index 1 of a_values and then goes to index 4 of it
+;Assistance Received: none
+; *********************************************************************
+(defun get_player_tournament_score(a_values)
+    (nth 4 (nth 1 a_values))
+)
+;(get_player_score)
+;
+; *********************************************************************
+;Function Name: update_stack
+;Purpose: to return bot's tournament score
+;Parameters:
+;            a_stack, a list that holds all of the values of all 12 stacks
+;            a_hand, a list tat holds any player's hand
+;            a_stack_index, a number that corresponds to a location in stack
+;            a_hand_index, a number that corresponds to a location in hand
+;Return Value: a list that has the updated values for stack
+;Algorithm:
+;            appends the values from index 0 to a_stack_index with the value in a_hand that a_hand_index points to and appends that with the rest of a_stack skipping a_stack_index
+;Assistance Received: none
+; *********************************************************************
+(defun update_stack(a_stack a_hand a_stack_index a_hand_index)
+    ;(append (subseq a_stack 0 a_stack_index)(list (nth a_hand_index a_hand))(subseq a_stack a_stack_index))
+    (append
+        (append 
+            (subseq a_stack 0 a_stack_index)(list(nth a_hand_index a_hand))
+        )
+        (subseq a_stack (1+ a_stack_index))
+    )
+    
+)
+;(update_stack)
+;
+; *********************************************************************
+;Function Name: display_board
+;Purpose: display the game board (organized display of a_values)
+;Parameters:
+;             a_values, a list that holds all of the game values 
+;Return Value: none
+;Algorithm:
+;            prints the corresponding lists/elements depending on how it is supposed to be organized
+;Assistance Received: none
+; *********************************************************************
+(defun display_board(a_values)
+        (print "BOT TOURNAMENT SCORE")
+        (print (nth 4 (nth 0 a_values)))
+        (print "BOT ROUND SCORE")
+        (print (nth 3 (nth 0 a_values)))
+        (terpri)
+        (print "BOT BONEYARD")
+        (print (nth 1 (nth 0 a_values)))
+        (print "BOT HAND ")
+        (print (nth 2 (nth 0 a_values)))
+        (terpri)
+        (print "STACKS")
+        (print (nth 0 (nth 0 a_values)))
+        (print (nth 0 (nth 1 a_values)))
+        (terpri)
+        (print "PLAYER HAND")
+        (print (nth 2 (nth 1 a_values)))
+        (print "PLAYER BONEYARD")
+        (print (nth 1 (nth 1 a_values)))
+        (terpri)
+        (print "PLAYER ROUND SCORE")
+        (print (nth 3 (nth 1 a_values)))
+        (print "PLAYER TOURNAMENT SCORE")
+        (print (nth 4 (nth 1 a_values)))
+)
+;(display_board)
+;
+; *********************************************************************
+;Function Name: check_double_tile
+;Purpose: checks if a domino is a double tile
+;Parameters:
+;             a_domino, a list that holds the color and pips of a domino
+;Return Value: a boolean that corresponds if a domino is a double tile or not
+;Algorithm:
+;            checks whether the first pip and second pip are equal or not and returns a boolean value
+;Assistance Received: none
+; *********************************************************************
+(defun check_double_tile (a_domino)
+    (cond
+        ((= (nth 1 a_domino) (nth 2 a_domino))
+            1
+        )
+        ((not (= (nth 1 a_domino) (nth 2 a_domino)))
+            0
+        )
+        (t "ERROR")
+    )
+)
+;(check_double_tile)
+;
+; *********************************************************************
+;Function Name: check_valid_move
+;Purpose: checks if a move is valid 
+;Parameters:
+;             a_hand_domino, a list that holds a domino from any player's hand
+;             a_stack_domino, a list that holds a domino from the stack
+;Return Value: a boolean that corresponds if a domino is a double tile or not
+;Algorithm:
+;           checks whether putting a_hand_domino over a_stack_domino is avalid move
+;Assistance Received: none
+; *********************************************************************
+(defun check_valid_move (a_hand_domino a_stack_domino)
+    (print "check_valid_move")
+    ;(print a_hand_domino)
+    ;(print (check_double_tile a_hand_domino))
+    (print (list a_hand_domino a_stack_domino))
+    (cond
+        ((and (= (check_double_tile a_hand_domino) 0) (>= (total a_hand_domino) (total a_stack_domino)))
+            (print "VALID MOVE")
+            (print "condition 1")
+            1
+        )
+        ((and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 0))
+            (print "VALID MOVE")
+            (print "condition 2")
+            1
+        )
+        ((and (> (total a_hand_domino) (total a_stack_domino)) (and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 1)))
+            (print "VALID MOVE")
+            (print "condition 3")
+            1
+        )
+        (t
+            (print "NOT VALID MOVE")
+            0
+        )
+    )
+)
+;(check_valid_move)
+;
+; *********************************************************************
+;Function Name: player_play
+;Purpose: handles how the human player plays
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: m_values, a list with elements from a_values updated
+;Algorithm:
+;            checks whether player wants to ask bot for help
+;            correctly updates hand and stacks based on the move played or generated by the bot
+;Assistance Received: none
+; *********************************************************************
+(defun player_play(a_values)
+    (print "play")
+    ;(print a_values)
+    (display_board a_values)
+    (print "get help? 1= yes, 0=no")
+    (let*
+        (
+            (m_ans (read))
+        )
+        (cond
+            ((= m_ans 0)
+                (print "Enter the index of the domino in hand that you want to play")
+                (print "Enter the index of the stack that you want to place on")
+                (let*
+                    (
+                        (m_hand_index
+                            (read)
+                        )
+                        (m_stack_index
+                            (read)
+                        )
+                        (m_updated_stack
+                            (update_stack (get_stack a_values) (get_player_hand a_values) m_stack_index m_hand_index)
+                            
+                        )
+                        (m_valid_move
+                            (check_valid_move (nth m_hand_index (get_player_hand a_values)) (nth m_stack_index (get_stack a_values)))
+                        )
+                        (m_values
+                            (cond
+                                ((= m_valid_move 0)
+                                    (print "recurse")
+                                    (player_play a_values)
+                                )
+                                ((= m_valid_move 1)
+                                    (list
+                                        (list
+                                            ;(nth 0 (nth 0 a_values))
+                                            (subseq m_updated_stack 0 6)
+                                            (nth 1 (nth 0 a_values))
+                                            (nth 2 (nth 0 a_values))
+                                            (nth 3 (nth 0 a_values))
+                                            (nth 4 (nth 0 a_values))
+                                        )
+                                        (list
+                                            ;(nth 0 (nth 1 a_values))
+                                            (subseq m_updated_stack 6 12)
+                                            (nth 1 (nth 1 a_values))
+                                            ;(cdr(nth 2 (nth 1 a_values)))
+                                            (update_hand (get_player_hand a_values) m_hand_index)
+                                            (nth 3 (nth 1 a_values))
+                                            (nth 4 (nth 1 a_values))
+                                        )
+                                        "COMPUTER"
+                                    )
+                                )
+                            )
+                            
+                        )
+                    )
+                    ;(print (nth m_hand_index (get_player_hand a_values)))
+                    ;(print (nth m_stack_index (get_stack a_values)))
+                    ;(print m_updated_stack)
+                    
+                    m_values
+                )
+            )
+            ((= m_ans 1)
+                (let*
+                    (
+                        (m_good_move
+                            (strategy (get_player_hand a_values) (get_stack a_values))
+                        )
+                         (m_updated_stack
+                            (update_stack (get_stack a_values) (get_player_hand a_values) (position (second m_good_move) (get_stack a_values)) (position (first m_good_move) (get_player_hand a_values)))   
+                        )
+                        (m_values
+                            (list
+                                (list
+                                    ;(nth 0 (nth 0 a_values))
+                                    (subseq m_updated_stack 0 6)
+                                    (nth 1 (nth 0 a_values))
+                                    (nth 2 (nth 0 a_values))
+                                    (nth 3 (nth 0 a_values))
+                                    (nth 4 (nth 0 a_values))
+                                )
+                                (list
+                                    ;(nth 0 (nth 1 a_values))
+                                    (subseq m_updated_stack 6 12)
+                                    (nth 1 (nth 1 a_values))
+                                    (update_hand (get_player_hand a_values) (position (first m_good_move) (get_player_hand a_values)))
+                                    (nth 3 (nth 1 a_values))
+                                    (nth 4 (nth 1 a_values))
+                                )
+                                "COMPUTER"
+                            )
+                        )
+                    )
+                    ;(print m_good_move)
+                    m_values
+                )
+            )
+        )
+    )
+   
+)
+;(player_play)
+;
+; *********************************************************************
+;Function Name: non_double_move
+;Purpose: checks if a move is a valid non double move
+;Parameters:
+;             a_hand_domino, a list that corresponds to a domino from the hand that is being played
+;             a_stack_domino, a list that corresponds to a domino from the stack that is being played on
+;Return Value: a list that holds a_hand_domino and a_stack_domino if it's a valid non double move or NIL if not
+;Algorithm:
+;            runs the parameters through different checks
+;            returns a list if it's a valid non double move or NIL if not
+;Assistance Received: none
+; *********************************************************************
+(defun non_double_move (a_hand_domino a_stack_domino)
+    (print "non_double_move")
+    
+    (cond
+        ((or (NULL a_hand_domino) (NULL a_stack_domino))
+            NIL
+        )
+        ((string= (get_color a_hand_domino) (get_color a_stack_domino))
+            ;(print "player's domino")
+            NIL
+        )
+        ((= (check_double_tile a_hand_domino) 1)
+            ;(print "double tile")
+            NIL
+        )
+        ((= (check_double_tile a_hand_domino) 0)
+            
+            (cond
+                ((and (>= (total a_hand_domino) (total a_stack_domino)) (check_valid_move a_hand_domino a_stack_domino))
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    ;(print (list a_hand_domino a_stack_domino))
+                    (print "hit non_double")
+                    (list a_hand_domino a_stack_domino)
+                )
+                ((< (total a_hand_domino) (total a_stack_domino))
+                    NIL
+                )
+            )
+        )
+        
+        
+    )
+)
+;(non_double_move)
+;
+; *********************************************************************
+;Function Name: double_move
+;Purpose: checks if a move is a valid double move
+;Parameters:
+;             a_hand_domino, a list that corresponds to a domino from the hand that is being played
+;             a_stack_domino, a list that corresponds to a domino from the stack that is being played on
+;Return Value: a list that holds a_hand_domino and a_stack_domino if it's a valid double move or NIL if not
+;Algorithm:
+;            runs the parameters through different checks
+;            returns a list if it's a valid double move or NIL if not
+;Assistance Received: none
+; *********************************************************************
+(defun double_move (a_hand_domino a_stack_domino)
+   (print "double_move")
+    
+   (cond
+        ((or (NULL a_hand_domino) (NULL a_stack_domino))
+            NIL
+        )
+        ((string= (get_color a_hand_domino) (get_color a_stack_domino))
+            ;(print "player's domino")
+            NIL
+        )
+        ((= (check_double_tile a_hand_domino) 0)
+            ;(print "non-double tile")
+            NIL
+        )
+        ((and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 0))
+            
+            (cond
+                ((and (< (total a_hand_domino) (total a_stack_domino)) (check_valid_move a_hand_domino a_stack_domino))
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    (print (list a_hand_domino a_stack_domino))
+                    (print "hit double")
+                    (list a_hand_domino a_stack_domino)
+                )
+                ((> (total a_hand_domino) (total a_stack_domino))
+                    NIL
+                )
+            )
+        )
+        ((and (= (check_double_tile a_hand_domino) 1) (= (check_double_tile a_stack_domino) 1))
+            
+            (cond
+                ((and (> (total a_hand_domino) (total a_stack_domino)) (check_valid_move a_hand_domino a_stack_domino))
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    (print (list a_hand_domino a_stack_domino))
+                    (print "hit double")
+                    (list a_hand_domino a_stack_domino)
+                )
+                ((> (total a_hand_domino) (total a_stack_domino))
+                    NIL
+                )
+            )
+        )
+        
+        
+        
+    )
+)
+;(double_move)
+;
+; *********************************************************************
+;Function Name: force_move
+;Purpose: checks if a move is a valid move
+;Parameters:
+;             a_hand_domino, a list that corresponds to a domino from the hand that is being played
+;             a_stack_domino, a list that corresponds to a domino from the stack that is being played on
+;Return Value: a list that holds a_hand_domino and a_stack_domino if it's a valid move or NIL if not
+;Algorithm:
+;            runs the parameters through different checks
+;            returns a list if it's a valid move or NIL if not
+;Assistance Received: none
+; *********************************************************************
+(defun force_move (a_hand_domino a_stack_domino) 
+    (print "force_move")
+   (cond
+        ((or (NULL a_hand_domino) (NULL a_stack_domino))
+            NIL
+        )
+        ((= (check_valid_move a_hand_domino a_stack_domino)1)
+                    ;(print a_hand_domino)
+                    ;(print a_stack_domino)
+                    (print (list a_hand_domino a_stack_domino))
+                    (print "hit force")
+                    (list a_hand_domino a_stack_domino)
+        )
+    )
+)
+;(force_move)
+;
+; *********************************************************************
+;Function Name: cross_check
+;Purpose: cross checks a domino with whole stack if there is a valid move
+;Parameters:
+;             a_hand_domino, a list that corresponds to a domino from the hand that is being played
+;             a_stack, a list that corresponds to the whole stack
+;Return Value: a list that holds a_hand_domino and a domino from stack if it's a valid move or NIL if not
+;Algorithm:
+;            runs the parameters through different checks
+;            returns a list if it's a valid non double move or NIL if not
+;            recursive until a_stack becomes NIL
+;Assistance Received: none
+; *********************************************************************
+(defun cross_check (a_hand_domino a_stack)
+    (print "cross_check")
+    (let*
+        (
+            (non_double_play
+                (non_double_move a_hand_domino (car a_stack))
+            )
+            (double_play
+                (double_move a_hand_domino (car a_stack))
+            )
+            (m_force_play
+                (force_move a_hand_domino (car a_stack))
+            )
+        )
+        (cond
+            ((NULL a_stack)
+                NIL
+            )
+            ( (and (and (NULL non_double_play) (NULL double_play)) (NULL m_force_play))
+                (cross_check a_hand_domino (cdr a_stack))
+                
+            )
+            ((and (NULL non_double_play) (NULL double_play))
+                (print "force play")
+                m_force_play
+                
+            )
+            ((not (NULL non_double_play))
+                (print "non_double_play")
+                ;(print non_double_play)
+                non_double_play
+                
+            )
+            ((not (NULL double_play))
+                (print "double_play")
+                ;(print double_play)
+                double_play
+            )
+            
+            
+        )
+    )
+)
+;(cross-check)
+;
+; *********************************************************************
+;Function Name: strategy
+;Purpose: cross checks a hand with whole stack if there is a valid move. Handles the decision of a strategic move.
+;Parameters:
+;             a_hand, a list that corresponds to the hand that is being played
+;             a_stack, a list that corresponds to the whole stack
+;Return Value: a list that holds a domino form hand and a domino from stack if it's a valid move or NIL if not
+;Algorithm:
+;            runs the parameters through different checks
+;            returns a list if it's a valid non double move or NIL if not
+;            recursive until a_hand becomes NIL
+;Assistance Received: none
+; *********************************************************************
+(defun strategy (a_hand a_stack)
+    (print "strategy")
+    (let*
+        (
+            (a_yes_strategic
+                (cross_check (car a_hand) a_stack)
+            )
+        )
+        (cond
+            ((NULL a_hand)
+                NIL
+            )
+            ((not (NULL a_yes_strategic))
+                (print "STRATEGY PLAY: ")
+                (print a_yes_strategic)
+                a_yes_strategic
+            )
+            ((NULL a_yes_strategic)
+                ;(print "cond 2")
+                ;(print a_yes_strategic)
+                (strategy (cdr a_hand) a_stack)
+            )
+            
+        )
+    )
+)
+;(strategy)
+;
+; *********************************************************************
+;Function Name: bot_play
+;Purpose: handles how the bot plays
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: m_values, a list that holds updated values of a_values
+;Algorithm:
+;            uses strategy function to pick a move
+;            correctly updates values and returns it as a list(m_values)
+;Assistance Received: none
+; *********************************************************************
+(defun bot_play(a_values)
+    (print "play")
+    ;(print a_values)
+    (display_board a_values)
+    (read)
+    (let*
+        (
+            (m_good_move
+                (strategy (get_bot_hand a_values) (get_stack a_values))
+            )
+             (m_updated_stack
+                (update_stack (get_stack a_values) (get_bot_hand a_values) (position (second m_good_move) (get_stack a_values)) (position (first m_good_move) (get_bot_hand a_values)))   
+            )
+            (m_values
+                (list
+                    (list
+                        ;(nth 0 (nth 0 a_values))
+                        (subseq m_updated_stack 0 6)
+                        (nth 1 (nth 0 a_values))
+                        (update_hand (get_bot_hand a_values) (position (first m_good_move) (get_bot_hand a_values)))
+                        (nth 3 (nth 0 a_values))
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        ;(nth 0 (nth 1 a_values))
+                        (subseq m_updated_stack 6 12)
+                        (nth 1 (nth 1 a_values))
+                        (nth 2 (nth 1 a_values))
+                        (nth 3 (nth 1 a_values))
+                        (nth 4 (nth 1 a_values))
+                    )
+                    "HUMAN"
+                )
+            )
+        )
+        ;(print m_good_move)
+        m_values
+    )
+
+)
+;(bot_play)
+;
+; *********************************************************************
+;Function Name: score
+;Purpose: totals all of the dominos with the corresponding color
+;Parameters:
+;             a_stack, a list that holds all of the stack values
+;             a_color, an element that holds the color of dominos to look for
+;Return Value: a number that corresponds to the total of the dominos that have the right color
+;Algorithm:
+;            checks what color is a_color
+;            recursively total the right dominos from a_stack
+;Assistance Received: none
+; *********************************************************************
+(defun score (a_stack a_color) 
+    (print "score")
+    (cond
+        ((string= a_color "W")
+            (print "white")
+            (cond
+                ((string= (get_color (car a_stack)) a_color)
+                    (+ (total (car a_stack)) (score (cdr a_stack) a_color))
+                )
+                ((string= (get_color (car a_stack)) "B")
+                    (score (cdr a_stack) a_color)
+                )
+                ((null a_stack)
+                    0
+                )
+                (t "ERROR")
+            )
+        )
+        ((string= a_color "B")
+            (print "black")
+            (cond
+                ((string= (get_color (car a_stack)) a_color)
+                    (+ (total (car a_stack)) (score (cdr a_stack) a_color))
+                )
+                ((string= (get_color (car a_stack)) "W")
+                    (score (cdr a_stack) a_color)
+                )
+                ((null a_stack)
+                    0
+                )
+                (t "ERROR")
+            )
+        )
+        (t "ERROR")
+    )
+
+)
+;(score)
+;
+; *********************************************************************
+;Function Name: update_round_score
+;Purpose: handles updating the round score for players and setting both hands to NIL
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: m_values, a list that holds updated values of a_values
+;Algorithm:
+;            correctly updates the right values and returns it as a list(m_values)
+;Assistance Received: none
+; *********************************************************************
+(defun update_round_score (a_values)
+    (print "update_round_score")
+    (let
+        (
+            (m_values
+                (list
+                    (list
+                        (nth 0 (nth 0 a_values))
+                        (nth 1 (nth 0 a_values))
+                        NIL
+                        (- (+ (get_bot_score a_values)(score (get_stack a_values) "W")) (score (get_bot_hand a_values) "W"))
+                        (nth 4 (nth 0 a_values))
+                    )
+                    (list
+                        (nth 0 (nth 1 a_values))
+                        (nth 1 (nth 1 a_values))
+                        NIL
+                        (- (+ (get_player_score a_values)(score (get_stack a_values) "B")) (score (get_player_hand a_values) "B"))
+                        (nth 4 (nth 1 a_values))
+                    )
+                    "HUMAN"
+                )
+            )
+        )
+        
+        m_values
+    )
+)
+;(update_round_score)
+;
+; *********************************************************************
+;Function Name: update_tournament_score
+;Purpose: handles updating the tournament score for players and resetting other values
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: m_values, a list that holds updated values of a_values
+;Algorithm:
+;            correctly updates the right values and returns it as a list(m_values)
+;Assistance Received: none
+; *********************************************************************
+(defun update_tournament_score (a_values)
+    (print "update_tournament_score")
+    (print "BOT SCORE: ")
+    (print (get_bot_score a_values))
+    (print "PLAYER SCORE: ")
+    (print (get_player_score a_values))
+    (let*
+        (
+            (m_bot_tournament_score
+                (cond
+                    ((> (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_bot_tournament_score a_values) 1)
+                    )
+                    ((= (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_bot_tournament_score a_values) 1)
+                    )
+                    ((< (get_bot_score a_values) (get_player_score a_values))
+                        (get_bot_tournament_score a_values)
+                    )
+                    (t "ERROR")
+                )
+            )
+            (m_player_tournament_score
+                (cond
+                    ((> (get_bot_score a_values) (get_player_score a_values))
+                        (get_player_tournament_score a_values)
+                    )
+                    ((= (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_player_tournament_score a_values) 1)
+                    )
+                    ((< (get_bot_score a_values) (get_player_score a_values))
+                        (+ (get_player_tournament_score a_values) 1)
+                    )
+                    (t "ERROR")
+                )
+            )
+            (m_values
+                (list
+                    (list
+                        NIL
+                        NIL
+                        NIL
+                        0
+                        m_bot_tournament_score
+                    )
+                    (list
+                        NIL
+                        NIL
+                        NIL
+                        0
+                        m_player_tournament_score
+                    )
+                    
+                )
+            )
+        )
+        (print m_values)
+        m_values
+    )
+)
+;(update_tournament_score)
+;
+; *********************************************************************
+;Function Name: dedclare_round_winner
+;Purpose: handles declaring the winner of the round
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: a_values, a list that holds all of the game values
+;Algorithm:
+;            runs values from a_values through checks to see who won (based on players' round scores)
+;            correctly prints the winner of the round
+;Assistance Received: none
+; *********************************************************************
+(defun declare_round_winner (a_values)
+    (cond
+        ((> (get_bot_score a_values) (get_player_score a_values))
+            (print "WINNER: BOT")
+            a_values
+        )
+        ((< (get_bot_score a_values) (get_player_score a_values))
+            (print "WINNER: PLAYER")
+            a_values
+        )
+        ((= (get_bot_score a_values) (get_player_score a_values))
+            (print "WINNER: DRAW")
+            a_values
+        )
+        (t "ERROR")
+    )
+)
+;(declare_round_winner)
+;
+; *********************************************************************
+;Function Name: check_one_to_all
+;Purpose: handles checking a_domino with all of the values of a_stack
+;Parameters:
+;             a_domino, a list that holds elements of a domino
+;             a_stack, a list tha holds all elements of all 12 stacks
+;Return Value: boolean value that corresponds whether the combinatoin of a_domino and a domino from stack is a valid move
+;Algorithm:
+;            recursively checks if a_domino and the first element of a_stack is a valid move
+;Assistance Received: none
+; *********************************************************************
+(defun check_one_to_all (a_domino a_stack)
+    (print "check_one_to_all")
+    ;(read)
+    ;(print (check_valid_move a_domino (car a_stack)))
+    (cond
+        ((null a_stack)
+            0
+        )
+        ((= (check_valid_move a_domino (car a_stack)) 1)
+            (print "playable")
+            ;(print a_domino)
+            ;(print (car a_stack))
+            1
+        )
+        ((not (= (check_valid_move a_domino (car a_stack)) 1))
+            (print "not playable")
+            ;(print a_domino)
+            ;(print (car a_stack))
+            (check_one_to_all a_domino (cdr a_stack))
+        )
+    )
+    
+)
+;(check_one_to_all)
+;
+; *********************************************************************
+;Function Name: check_playable
+;Purpose: checks if there is a playable move 
+;Parameters:
+;             a_hand, a list that holds the elements of a given domino
+;             a_stack, a list that holds all values of all 12 stacks
+;Return Value: boolean value that corresponds whether there is a valid move with any combination of dominos from a_hand and a_stack
+;Algorithm:
+;            recursively runs values of a_hand with a_stack by calling check_one_to_all function until a_hand becomes NIL
+;Assistance Received: none
+; *********************************************************************
+(defun check_playable (a_hand a_stack)
+    (print "check_playable")
+    ;(read)
+    (cond 
+        ((null a_hand)
+            ;(print "no playable")
+            0
+        )
+        ((=(check_one_to_all (car a_hand) a_stack) 1)
+            ;(print "playable")
+            1
+        )
+        ((not (=(check_one_to_all (car a_hand) a_stack) 1))
+            (check_playable (cdr a_hand) a_stack)
+        )
+    )
+    
+)
+;(check_playable)
+;
+; *********************************************************************
+;Function Name: get_all_hand
+;Purpose: gets the combined hand of player and bot
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: a list that consists of all values from both players' hands
+;Algorithm:
+;            gets the hand of player and bot and appends them together
+;Assistance Received: none
+; *********************************************************************
+(defun get_all_hand (a_values)
+    (append (nth 2(nth 0 a_values)) (nth 2 (nth 1 a_values)))
+)
+;(get_all_hand)
+;
+; *********************************************************************
+;Function Name: save
+;Purpose: responsible for handling saving
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: NIL if player wants to save, a_values if not
+;Algorithm:
+;            asks player if they want to save, then returns the correct list
+;Assistance Received: none
+; *********************************************************************
+(defun save (a_values)
+    (print "do you want to save? 1 = yes, 0 = no")
+    (let
+        (
+            (m_ans (read))
+        )
+        (cond
+            ((= m_ans 1)
+                (print a_values)
+                NIL
+            )
+            ((= m_ans 0)
+                a_values
+            )
+            (t "ERROR")
+        )
+    )
+)
+;(save)
+;
+; *********************************************************************
+;Function Name: turn
+;Purpose: responsible for handling the turn based system
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: a list that corresponds to the state of the game
+;Algorithm:
+;            recursively checks if a_values is null
+;            lets players play if they have a valid move possible
+;            records their scores and if neededdraws
+;            asks if they want to save
+;            returns nil if they do           
+;Assistance Received: none
+; *********************************************************************
+(defun turn (a_values)
+    (print "turn=============================================================================================")
+    ;(print (get_player_hand a_values))
+    ;(print (get_all_hand a_values))
+    ;(check_playable (get_all_hand a_values) (get_stack a_values))
+    ;(save a_values)
+    (cond
+        ((null a_values)
+            NIL
+        )
+        ((= (check_playable (get_all_hand a_values) (get_stack a_values)) 1)
+            (progn
+                ;(read)
+                (cond
+                    ((string= (get_first_player a_values) "HUMAN")
+                        (progn
+                            (print "HUMAN")
+                            ;(display_board a_values) 
+                            (cond
+                                ((= (check_playable (get_player_hand a_values) (get_stack a_values)) 1)
+                                    (turn (save(player_play a_values)))
+                                )
+                                ((= (check_playable (get_player_hand a_values) (get_stack a_values)) 0)
+                                    (print "no playable move, skip turn")
+                                    (turn (save(bot_play a_values)))
+                                )
+                            )
+                        )
+                    )
+                    ((string= (get_first_player a_values) "COMPUTER")
+                        (progn
+                            (print "COMPUTER")
+                            ;(display_board a_values)
+                            (cond
+                                ((= (check_playable (get_bot_hand a_values) (get_stack a_values)) 1)
+                                    (turn (save(bot_play a_values)))
+                                )
+                                ((= (check_playable (get_bot_hand a_values) (get_stack a_values)) 0)
+                                    (print "no playable move, skip turn")
+                                    (turn (save(player_play a_values)))
+                                )
+                            )
+                        )
+                        
+                    )
+                    (t "ERROR")
+                )
+            )
+        )
+        ((= (check_playable (get_all_hand a_values) (get_stack a_values)) 0)
+            (progn
+                ;a_values
+                (cond
+                    ((not(null (get_player_boneyard a_values)))
+                        ;(read)
+                        (turn(draw (update_round_score a_values)))
+                    )
+                    ((null (get_player_boneyard a_values))
+                        (print a_values)
+                        (print "end")
+                        (update_tournament_score (declare_round_winner (update_round_score a_values)))
+                    )
+                    (t "ERROR")
+                
+                )
+                
+            )
+        )
+        (t "ERROR")
+    )
+    
+)
+;(turn)
+;
+; *********************************************************************
+;Function Name: read_from_file
+;Purpose: asking player if they want to load an existing game
+;Parameters:
+;             none
+;Return Value: m_values, a list that holds the game values of an existing game
+;Algorithm:
+;           asks player to input the game values and returns it 
+;Assistance Received: none
+; *********************************************************************
+(defun read_from_file ()
+    (print "serialization file")
+    (let(
+            (m_values (read))
+        )
+        m_values
+    )
+)
+;(read_from_file)
+;
+; *********************************************************************
+;Function Name: declare_tournament_winner
+;Purpose: declares who won the tournament
+;Parameters:
+;             a_values, a list that holds all of the game values
+;Return Value: a_values, a list that holds the game values
+;Algorithm:
+;           prints who won the tournament
+;           returns a_values
+;Assistance Received: none
+; *********************************************************************
+(defun declare_tournament_winner (a_values)
+    (cond
+        ((> (get_bot_tournament_score a_values) (get_player_tournament_score a_values))
+            (print "WINNER: BOT")
+            a_values
+        )
+        ((< (get_bot_tournament_score a_values) (get_player_tournament_score a_values))
+            (print "WINNER: PLAYER")
+            a_values
+        )
+        ((= (get_bot_tournament_score a_values) (get_player_tournament_score a_values))
+            (print "WINNER: DRAW")
+            a_values
+        )
+        (t "ERROR")
+    )
+)
+;(declare_tournament_winner)
+;
+; *********************************************************************
+;Function Name: tournament
+;Purpose: handles playing another tournament
+;Parameters:
+;             a_values
+;Return Value: NIL if a_values is null
+;Algorithm:
+;           asks player if they want to play another tournament
+;           recursively gets called after each round
+;           displays winner and the board if player doesnt want to play another round
+;Assistance Received: none
+; *********************************************************************
+(defun tournament (a_values)
+    (print "tournament")
+    (print "do you want to play another tournament? (1 = yes, 0 = no)")
+    (cond
+        ((not (null a_values))
+            (let*
+                (
+                    (ans (read))
+                )
+                (cond
+                    ((= ans 1)
+                        (progn
+                            (print "continue to next tournament")
+                            (tournament
+                                (turn
+                                    (draw
+                                        (check_first
+                                            (set_stacks
+                                               (shuffle
+                                                    (generate_values_cont a_values)
+                                                ) 
+                                            )
+                                            
+                                        )
+                                    )
+                                )
+                            )
+                            
+                        )
+                    )
+                    ((= ans 0)
+                        (display_board a_values)
+                        (declare_tournament_winner a_values)
+                    )
+                )
+            )
+        )
+        ((null a_values)
+            NIL
+        )
+        (t "ERROR")
+    )
+    
+)
+;(tournament)
+;
+; *********************************************************************
+;Function Name: game
+;Purpose: handles the whole flow of the game
+;Parameters:
+;             x, an element that corresponds to what the player wants to do
+;Return Value: none
+;Algorithm:
+;           based on x, it plays a new tournament or an exisiting one
+;Assistance Received: none
+; *********************************************************************
+(defun game (x)
+    (cond 
+        ((= x 0) 
+            (print "start new tournament")
+            (tournament
+                (turn
+                    (draw
+                        (check_first
+                            (set_stacks
+                               (shuffle
+                                    (generate_values)
+                                ) 
+                            )
+                            
+                        )
+                    )
+                )
+                
+            )
+        )
+        ((= x 1) 
+            (print "resume old tournament")
+            (tournament
+                (turn
+                    (draw
+                        (check_first
+                            (set_stacks
+                                (shuffle
+                                    (read_from_file)
+                                )
+                            )
+                        )
+                        
+                    )
+                )
+            )
+            
+                  
+        )
+        (t "wrong input. Validate")
+    )
+)
+;(game)
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;ask user for input
+(format nil "0 : Start New Tournament ~% 1 : Resume Old Tournament")
+(game (read))

@@ -237,6 +237,12 @@
                         (
                             (> (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
                                 (progn
+                                    (print "Computer's first domino has a total pips of:")
+                                    (print (total (nth 0 (nth 1 (nth 0 a_values)))))
+                                    (print "Human's first domino has a total pips of:")
+                                    (print (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                    (print "Computer's domino > Player's Domino")
+                                    (print "Computer goes first")
                                     (let
                                         (
                                             (m_values
@@ -259,7 +265,7 @@
                                                 )
                                             )
                                         )
-                                        ;(print m_values)
+                                        (print m_values)
                                         m_values
                                     )   
                                 
@@ -268,6 +274,13 @@
                         (
                             (< (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
                                 (progn
+                                    ;(print (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                    (print "Computer's first domino has a total pips of:")
+                                    (print (total (nth 0 (nth 1 (nth 0 a_values)))))
+                                    (print "Human's first domino has a total pips of:")
+                                    (print (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                    (print "Computer's domino < Player's Domino")
+                                    (print "Human goes first")
                                     (let
                                         (
                                             (m_values
@@ -290,9 +303,24 @@
                                                 )
                                             )
                                         )
-                                        ;(print m_values)
+                                        (print m_values)
                                         m_values
                                     )   
+                                
+                                )
+                        )
+                        (
+                            (= (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                (progn
+                                    ;(print (total (nth 0 (nth 1 (nth 0 a_values)))) (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                    (print "Computer's first domino has a total pips of:")
+                                    (print (total (nth 0 (nth 1 (nth 0 a_values)))))
+                                    (print "Human's first domino has a total pips of:")
+                                    (print (total (nth 0 (nth 1 (nth 1 a_values)))))
+                                    (print "Computer's domino = Player's Domino")
+                                    (print "Shuffle again")
+                                    
+                                    (check_first (shuffle a_values))
                                 
                                 )
                         )
@@ -754,7 +782,7 @@
 ;Assistance Received: none
 ; *********************************************************************
 (defun player_play(a_values)
-    (print "play")
+    (print "Human playing")
     ;(print a_values)
     (display_board a_values)
     (print "get help? 1= yes, 0=no")
@@ -1043,13 +1071,13 @@
                 
             )
             ((not (NULL non_double_play))
-                (print "non_double_play")
+                (print "non double play")
                 ;(print non_double_play)
                 non_double_play
                 
             )
             ((not (NULL double_play))
-                (print "double_play")
+                (print "double play")
                 ;(print double_play)
                 double_play
             )
@@ -1113,7 +1141,7 @@
 ;Assistance Received: none
 ; *********************************************************************
 (defun bot_play(a_values)
-    (print "play")
+    (print "Bot playing")
     ;(print a_values)
     (display_board a_values)
     (read)
